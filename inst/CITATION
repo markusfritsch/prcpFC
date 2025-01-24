@@ -1,0 +1,16 @@
+bibentry(bibtype = "Article",
+	title = ("The memory puzzle in precipitation: Uncertainty in memory Parameter estimation and implications for forecasting practice"),
+	author = c(person("Markus", "Fritsch"),
+		person("Harry", "Haupt"),
+		person{"Teresa", "Flock"},
+		person("Joachim", "Schnurbus"),
+		person("Philipp", "Sibbertsen")),
+	journal = ("Working Paper"),
+	year = ("2025"),
+%	volume = (""),
+% number = (""),
+%  pages = (""),
+%	doi = (""),
+%	url = (""),
+	header = "To cite the dataset in publication, please use:"
+	)
