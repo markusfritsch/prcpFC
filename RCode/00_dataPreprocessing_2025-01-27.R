@@ -306,4 +306,4 @@ dat_demeded_rs	<- dat_demeded[, colnames(dat_demeded) %in% dat_rs$statID]
 refMeds_rs		<- refMeds[, colnames(refMeds) %in% dat_rs$statID]
 
 #save dataset
-save(dat_rs, dat_demeded_rs, refMeds_rs, file = "raindata_demeded_RS_2025-01-16.RData")
+#save(dat_rs, dat_demeded_rs, refMeds_rs, file = "raindata_demeded_RS_2025-01-16.RData")

@@ -43,7 +43,9 @@ rm(list=ls())
 
 ###	Load data
 
-load("raindata_demeded_RS_2025-01-16.RData")
+source("00_dataPreprocessing_2025-01-27")
+
+
 
 n.yrs		<- 5		#years for which forecasts are generated
 h		<- 12		#maximum steps ahead for which forecasts are generated
