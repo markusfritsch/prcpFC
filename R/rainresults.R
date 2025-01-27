@@ -1,53 +1,57 @@
-#' Election poll data for German state elections from 2000-2023
+#' Memory parameter estimates and diagnostics for precipitation time series
 #'
-#' Election poll dataset for all German state elections from
-#' January 2000 until December 2023. The dataset contains the
-#' variables state, institute, poll type, poll participants,
-#' date when poll is published, time horizon during which poll
-#' was conducted, year of poll, week of poll, poll index in
-#' state since January 2000, election cycle since January 2000,
-#' poll index in election cycle since January 2000, starting
-#' date of poll, end date of poll, number of days during which
-#' poll was conducted, days from end of poll until poll was
-#' published, days ahead of election, shares of six main
-#' parties and party category other.
+#' Dataset with memory parameter estimates and diagnostics on
+#' the underlying time series for precipitation data collected
+#' by the monitoring stations of the Global Historical Climate
+#' Network daily (GHCNd). The memory parameter estimates are
+#' based on data from January 1960 until December 2019. The
+#' dataset contains the variables station identifier, latitude,
+#' longitude, altitude, Koppen climate zone classification,
+#' Koppen main climate zone, Koppen precipitation subgroup,
+#' Koppen temperature subgroup, indicator variables based on
+#' the methodology described in \insertCite{fritsch2025}{prcpFC}
+#' for spurious long memory, mean breaks, short memory noise,
+#' and potential contaminations, different sets of memory
+#' parameter estimates and differences in the estimates.
 #'
-#' The dataset was collected by \insertCite{Wahlrecht.de}{fixedEventFC}
-#' and employed in \insertCite{Fritsch2024}{fixedEventFC} which also
-#' provides more details on the different variables.
+#' For more details on data collection by the GHCNd, see
+#' \insertCite{menne2012overview}{prcpFC},
+#' \insertCite{durre2010comprehensive}{prcpFC}, and
+#' \insertCite{durre2008strategies}{prcpFC}.
+#' The dataset is employed in \insertCite{fritsch2025}{prcpFC}
+#' to analyze the memory properties of the time series and
+#' generate forecasts based on the memory parameter estimates.
+#' The climate zone classification assigned to the stations
+#' was derived by \insertCite{kottek2006}{prcpFC}.
 #'
-#' @name datPolls
+#' @name rainresults
 #'
 #' @docType data
 #'
-#' @usage data(datPolls)
+#' @usage data(rainresults)
 #'
-#' @format A dataset with 2299 rows and 23 variables containing:
+#' @format A dataset with 2170 rows and 19 variables containing:
 #' \describe{
-#' \item{BL}{state identifier}
-#' \item{Institut}{institute}
-#' \item{PollType}{type of election poll}
-#' \item{PollParticipants}{number of participants in the poll}
-#' \item{PollPublished}{date on which poll was published}
-#' \item{PollDate}{time horizon during which poll was conducted}
-#' \item{PollYear}{year in which poll was publised}
-#' \item{PollWeek}{week in which poll was publised}
-#' \item{PollIndex}{poll index in state since January 2000}
-#' \item{PollElCycle}{election cycle since January 2000}
-#' \item{PollIndElCycle}{poll index in election cycle since January 2000}
-#' \item{PollStart}{starting date of poll}
-#' \item{PollEnd}{end date of poll}
-#' \item{PollDays}{number of days during which poll was conducted}
-#' \item{DaysTillPollPublished}{days from end of poll until poll was published}
-#' \item{DaysToEl}{days ahead of election}
-#' \item{CDU_CSU}{share of Christian Democratic/Social Union}
-#' \item{SPD}{share of Social Democratic Party}
-#' \item{Gruene}{share of Federation 90/The Greens}
-#' \item{FDP}{share of Free Democratic Party}
-#' \item{DIE_LINKE}{share of The Left Party}
-#' \item{AfD}{share of Alternative for Germany}
-#' \item{Sonstige}{share of other parties}
-#' }
+#' \item{statID}{station identifier}
+#' \item{lat}{latitude (CRS WGS84)}
+#' \item{lon}{longitude (CRS WGS84)}
+#' \item{alt}{altitude (in meters)}
+#' \item{koppen}{Koppen climate zone classification}
+#' \item{zone_c}{Koppen main climate zone}
+#' \item{zone_p}{Koppen precipitation subgroup}
+#' \item{zone_t}{Koppen temperature subgroup}
+#' \item{quspurious5}{indicator variable if null of \insertCite{qu2011test}{prcpFC} test is rejected on 5\% significance level}
+#' \item{quspurious10}{indicator variable if null of \insertCite{qu2011test}{prcpFC} test is rejected on 10\% significance level}
+#' \item{meanbreak}{indicator variable if null of \insertCite{shao2011simple}{prcpFC} and \insertCite{iacone2014fixed}{prcpFC} tests is rejected on 5\% significance level}
+#' \item{armanoise}{}
+#' \item{potentially_contaminated}{indicator variable if any of the employed tests rejects its null hypothesis on 10\% significance level}
+#' \item{LW}{memory parameter estimate according to the Local Whittle estimator of \insertCite{kunsch1987statistical}{prcpFC}}
+#' \item{LWmixed}{memory parameter estimate according to the Local Whittle estimator of \insertCite{kunsch1987statistical}{prcpFC} adjusted for short-run dynamics}
+#' \item{houLW}{memory parameter estimate according to the modified Local Whittle estimator of \insertCite{hou2014modified}{prcpFC}}
+#' \item{houLWmixed}{memory parameter estimate according to the modified Local Whittle estimator of \insertCite{hou2014modified}{prcpFC} adjusted for short-run dynamics}
+#' \item{bestd}{memory parameter estimate based on the diagnostics}
+#' \item{ddiff}{difference of original and modified memory parameter estimate}
+#' #' }
 #'
 #' @keywords datasets
 #'
@@ -56,9 +60,9 @@
 #'
 #' @examples
 #' \dontrun{
-#'   data(datPolls, package = "fixedEventFC")
-#'   n <- datPolls$PollParticipants
-#'   mean(n)
+#'   data(rainresults, package = "prcpFC")
+#'   n <- rainresults$bestd
+#'   median(n)
 #' }
 #'
 NULL

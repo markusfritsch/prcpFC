@@ -1,52 +1,40 @@
-#' Election poll data for German state elections from 2000-2023
+#' Global Historical Climate Network daily (GHCNd) precipitation data from 2000-2023
 #'
-#' Election poll dataset for all German state elections from
-#' January 2000 until December 2023. The dataset contains the
-#' variables state, institute, poll type, poll participants,
-#' date when poll is published, time horizon during which poll
-#' was conducted, year of poll, week of poll, poll index in
-#' state since January 2000, election cycle since January 2000,
-#' poll index in election cycle since January 2000, starting
-#' date of poll, end date of poll, number of days during which
-#' poll was conducted, days from end of poll until poll was
-#' published, days ahead of election, shares of six main
-#' parties and party category other.
+#' Monthly precipitation data from the monitoring stations of
+#' the Global Historical Climate Network daily (GHCNd) from 
+#' January 1960 until December 2024. The dataset contains the
+#' variables station identifier, latitude, longitude, altitude,
+#' station name, US state, network, aa, koppen climate
+#' classification, koppen climate zone, koppen precipitation
+#' subgroup, koppen temperature subgroup.
 #'
-#' The dataset was collected by \insertCite{Wahlrecht.de}{fixedEventFC}
-#' and employed in \insertCite{Fritsch2024}{fixedEventFC} which also
-#' provides more details on the different variables.
+#' The dataset was collected by the monitoring stations of the
+#' GHCNd, as described in \insertCite{menne2012overview}{prcpFC},
+#' \insertCite{durre2010comprehensive}{prcpFC}, \insertCite{durre2008strategies}{prcpFC}
+#' and employed in \insertCite{fritsch2025}{prcpFC} which also
+#' provides forecasts based on the memory properties of the
+#' collected time series. The climate zone classification
+#' assigned to the stations was derived by \insertCite{kottek2006}{prcpFC}.
 #'
-#' @name datPolls
+#' @name ghcndStations
 #'
 #' @docType data
 #'
-#' @usage data(datPolls)
+#' @usage data(ghcndStations)
 #'
-#' @format A dataset with 2299 rows and 23 variables containing:
+#' @format A dataset with 118492 rows and 11 variables containing:
 #' \describe{
-#' \item{BL}{state identifier}
-#' \item{Institut}{institute}
-#' \item{PollType}{type of election poll}
-#' \item{PollParticipants}{number of participants in the poll}
-#' \item{PollPublished}{date on which poll was published}
-#' \item{PollDate}{time horizon during which poll was conducted}
-#' \item{PollYear}{year in which poll was publised}
-#' \item{PollWeek}{week in which poll was publised}
-#' \item{PollIndex}{poll index in state since January 2000}
-#' \item{PollElCycle}{election cycle since January 2000}
-#' \item{PollIndElCycle}{poll index in election cycle since January 2000}
-#' \item{PollStart}{starting date of poll}
-#' \item{PollEnd}{end date of poll}
-#' \item{PollDays}{number of days during which poll was conducted}
-#' \item{DaysTillPollPublished}{days from end of poll until poll was published}
-#' \item{DaysToEl}{days ahead of election}
-#' \item{CDU_CSU}{share of Christian Democratic/Social Union}
-#' \item{SPD}{share of Social Democratic Party}
-#' \item{Gruene}{share of Federation 90/The Greens}
-#' \item{FDP}{share of Free Democratic Party}
-#' \item{DIE_LINKE}{share of The Left Party}
-#' \item{AfD}{share of Alternative for Germany}
-#' \item{Sonstige}{share of other parties}
+#' \item{statID}{station identifier}
+#' \item{lat}{latitude (CRS WGS84)}
+#' \item{lon}{longitude (CRS WGS84)}
+#' \item{alt}{altitude (in meters)}
+#' \item{statName}{station name}
+#' \item{stateUS}{US state in which the station is located}
+#' \item{koppen2}{Koppen climate zone classification}
+#' \item{koppen2.tmp}{Number of letters of Koppen climate zone classification}
+#' \item{koppen2.cz}{Koppen main climate zone}
+#' \item{koppen2.ps}{Koppen precipitation subgroup}
+#' \item{koppen2.ts}{Koppen temperature subgroup}
 #' }
 #'
 #' @keywords datasets
@@ -56,8 +44,8 @@
 #'
 #' @examples
 #' \dontrun{
-#'   data(datPolls, package = "fixedEventFC")
-#'   n <- datPolls$PollParticipants
+#'   data(ghcndStations, package = "prcpFC")
+#'   n <- ghcndStations$alt
 #'   mean(n)
 #' }
 #'
