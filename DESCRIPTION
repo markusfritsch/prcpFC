@@ -1,0 +1,31 @@
+Package: prcpFC
+Type: Package
+Title: Functions and data for monthly precipitation and precipitation anomaly forecasting
+Version: 0.1.0
+Date: 2025-01-27
+Authors@R: c(person("Markus", "Fritsch", role = c("aut", "cre"),
+		email = "Markus.Fritsch@uni-Passau.de"),
+	person("Harry", "Haupt", role = c("aut"),
+    email = "Harry.Haupt@uni-Passau.de"),
+	Person("Teresa", "Flock", role = c("aut"),
+    email = "flock@statistik.uni-hannover.de"),
+	person("Joachim", "Schnurbus", role = c("aut"),
+    email = "Joachim.Schnurbus@uni-Passau.de"),
+	Person("Philipp", "Sibbertsen", role = c("aut"),
+    email = "sibbertsen@statistik.uni-hannover.de")    )
+Author: Markus Fritsch [aut, cre], Harry Haupt [aut], Teresa Flock [aut], Joachim Schnurbus [aut], Philipp Sibbertsen [aut]
+Maintainer: Markus Fritsch <Markus.Fritsch@uni-Passau.de>
+Depends: R (>= 4.3.0),
+  Rdpack (>= 2.6)
+Suggests: testthat (>= 3.0.4),
+	R.rsp (>= 0.44.0)
+RdMacros: Rdpack
+LazyData: true
+Description: Functions and data for monthly precipitation and precipitation anomaly forecsating at the locations of the Global Historical Climate Network monitoring stations.
+License: GPL (>=2)
+URL: https://github.com/markusfritsch/prcpFC
+BugReports: https://github.com/markusfritsch/prcpFC/issues
+VignetteBuilder: R.rsp
+Encoding: UTF-8
+Classification/JEL: C18, C32, C52, C53, Q54
+RoxygenNote: 7.2.3
