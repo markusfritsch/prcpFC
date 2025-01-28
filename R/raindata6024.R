@@ -20,7 +20,7 @@
 #'
 #' @docType data
 #'
-#' @usage data(raindata)
+#' @usage data(raindata6024)
 #'
 #' @format A dataset with 780 rows and 607 columns containing:
 #' \describe{
@@ -35,8 +35,8 @@
 #'
 #' @examples
 #' \dontrun{
-#'   data(raindata, package = "prcpFC")
-#'   median(raindata[,2])
+#'   data(raindata6024, package = "prcpFC")
+#'   median(raindata6024[,2])
 #' }
 #'
 NULL

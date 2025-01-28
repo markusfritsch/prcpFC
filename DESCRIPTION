@@ -2,16 +2,16 @@ Package: prcpFC
 Type: Package
 Title: Functions and data for monthly precipitation and precipitation anomaly forecasting
 Version: 0.1.0
-Date: 2025-01-27
+Date: 2025-01-28
 Authors@R: c(person("Markus", "Fritsch", role = c("aut", "cre"),
 		email = "Markus.Fritsch@uni-Passau.de"),
 	person("Harry", "Haupt", role = c("aut"),
     email = "Harry.Haupt@uni-Passau.de"),
-	Person("Teresa", "Flock", role = c("aut"),
+	person("Teresa", "Flock", role = c("aut"),
     email = "flock@statistik.uni-hannover.de"),
 	person("Joachim", "Schnurbus", role = c("aut"),
     email = "Joachim.Schnurbus@uni-Passau.de"),
-	Person("Philipp", "Sibbertsen", role = c("aut"),
+	person("Philipp", "Sibbertsen", role = c("aut"),
     email = "sibbertsen@statistik.uni-hannover.de")    )
 Author: Markus Fritsch [aut, cre], Harry Haupt [aut], Teresa Flock [aut], Joachim Schnurbus [aut], Philipp Sibbertsen [aut]
 Maintainer: Markus Fritsch <Markus.Fritsch@uni-Passau.de>
