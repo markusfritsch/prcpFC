@@ -163,18 +163,18 @@ colnames(fc_bestd_ano)	<- dat_rs$statID
 fc_drot_ano		<- resArr_drot[61,,]
 colnames(fc_drot_ano)	<- dat_rs$statID
 
-xtable(t(fc_dLW_ano), digits = 2)
-xtable(t(fc_bestd_ano), digits = 2)
-xtable(t(fc_drot_ano), digits = 2)
+xtable(t(fc_dLW_ano), digits = 0)
+xtable(t(fc_bestd_ano), digits = 0)
+xtable(t(fc_drot_ano), digits = 0)
 
 #precipitation forecasts 1 to 12 steps ahead
 fc_dLW_tot	<- fc_dLW_ano + refMeds[, colnames(refMeds) %in% colnames(fc_dLW)]
 fc_bestd_tot	<- fc_bestd_ano + refMeds[, colnames(refMeds) %in% colnames(fc_bestd)]
 fc_drot_tot	<- fc_drot_ano + refMeds[, colnames(refMeds) %in% colnames(fc_drot)]
 
-xtable(t(fc_dLW_tot), digits = 2)
-xtable(t(fc_bestd_tot), digits = 2)
-xtable(t(fc_drot_tot), digits = 2)
+xtable(t(fc_dLW_tot), digits = 0)
+xtable(t(fc_bestd_tot), digits = 0)
+xtable(t(fc_drot_tot), digits = 0)
 
 
 
