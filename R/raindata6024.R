@@ -16,7 +16,7 @@
 #' to analyze the memory properties of the time series and
 #' generate forecasts based on the memory parameter estimates.
 #'
-#' @name raindata
+#' @name raindata6024
 #'
 #' @docType data
 #'
@@ -25,7 +25,7 @@
 #' @format A dataset with 780 rows and 607 columns containing:
 #' \describe{
 #' \item{date}{date in format YYYY-mm}
-#' \item{}{column names refer to station identifiers of the time series}
+#' \item{ASN00003003}{columns 2 to 607 refer to station identifiers of the GHCNd monitoring stations}
 #' }
 #'
 #' @keywords datasets
