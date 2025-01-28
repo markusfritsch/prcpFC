@@ -7,17 +7,6 @@
 ###	Basics
 ###
 
-###	Set work directories
-
-#	setwd("C:/Work/Research/Papers/Rainfall_Salzburg")
-#	setwd("C:/JSchnurbus/Research/Papers/Rainfall_Salzburg")
-#	setwd("D:/Markus/Work/20_Projekte/280_Rainfall/R/10_data")
-	setwd("D:/Work/20_Projekte/280_Rainfall/R/10_data/2025-01-16_dataUpdate")
-	setwd("E:/Work/20_Projekte/280_Rainfall/R/10_data/2025-01-16_dataUpdate")
-#	setwd("C:/Users/Admin/OneDrive/Dokumente/280_Rainfall/R/10_data")
-
-
-
 
 ###	Load libraries
 

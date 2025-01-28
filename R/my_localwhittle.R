@@ -1,10 +1,19 @@
 # in LongMemoryTS Fehler: m-l-1
+
+#' @keywords internal
+#'
 my_R.LW <- function (d, peri, m, n, l=1){
   lambda <- 2*pi/n*(l:m)
   K <- log(1/(m-l+1)*(sum(peri[l:m]*(lambda)^(2*d))))-2*d/(m-l+1)*sum(log(lambda))
   return(K)
 }
 
+
+
+
+
+#' @keywords internal
+#'
 my_LW <- function(data, m, int=c(-0.5,2.5), diff_param=1, l=1){
   n <- length(data)
   peri <- longmemo::per(data)[-1]
@@ -15,6 +24,9 @@ my_LW <- function(data, m, int=c(-0.5,2.5), diff_param=1, l=1){
 
 
 
+
+#' @keywords internal
+#'
 my_J.M <- function (vec, peri, m, n){
   d <- vec[1]
   theta <- vec[2]
@@ -26,6 +38,11 @@ my_J.M <- function (vec, peri, m, n){
 }
 
 
+
+
+
+#' @keywords internal
+#'
 my_houLW <- function(data, m, int=c(-0.4999,0.99)){
   n <- length(data)
   peri <- longmemo::per(data)[-1]
@@ -38,6 +55,11 @@ my_houLW <- function(data, m, int=c(-0.4999,0.99)){
 }
 
 
+
+
+
+#' @keywords internal
+#'
 my_Qu <- function (data, m, epsilon = 0.05){
   n <- length(data)
   m <- min(m, floor(n/2))

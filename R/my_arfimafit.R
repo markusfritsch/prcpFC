@@ -1,3 +1,5 @@
+#' @keywords internal
+#'
 my_arfimafit <- function(x, maxp, maxq, criterion="BIC"){
   pqcombis <- expand.grid(p=0:maxp, q=0:maxq)
   allfits <- mapply(function(p,q){cat(paste0("p=",p,", q=",q,"\n"));arfima::arfima(x,order=c(p,0,q),dmean=FALSE,quiet=TRUE)},
@@ -17,6 +19,11 @@ my_arfimafit <- function(x, maxp, maxq, criterion="BIC"){
 }
 
 
+
+
+
+#' @keywords internal
+#'
 my_arstationaritycheck <- function(phis){
   charpolynom <- as.function(polynom::polynomial(coef=c(1,-phis)))
   fvalues <- sapply(seq(-1,1,0.00001), charpolynom)
@@ -24,6 +31,12 @@ my_arstationaritycheck <- function(phis){
   return(stationary)
 }
 
+
+
+
+
+#' @keywords internal
+#'
 my_mainvertibilitycheck <- function(thetas){
   charpolynom <- as.function(polynom::polynomial(coef=c(1,-thetas)))
   fvalues <- sapply(seq(-1,1,0.00001), charpolynom)
@@ -32,6 +45,10 @@ my_mainvertibilitycheck <- function(thetas){
 }
 
 
+
+
+#' @keywords internal
+#'
 my_prewhitening <- function(x){  # following [Qu 2011, Sec. 5]
   mu <- mean(x)
   bestfit <- my_arfimafit(x-mu, maxp=1, maxq=1, criterion="AIC")
