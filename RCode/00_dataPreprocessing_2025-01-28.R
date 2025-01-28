@@ -7,33 +7,14 @@
 ###	Basics
 ###
 
-###	Set work directories
-
-#	setwd("C:/Work/Research/Papers/Rainfall_Salzburg")
-#	setwd("C:/JSchnurbus/Research/Papers/Rainfall_Salzburg")
-#	setwd("D:/Markus/Work/20_Projekte/280_Rainfall/R/10_data")
-	setwd("D:/Work/20_Projekte/280_Rainfall/R/10_data/2025-01-16_dataUpdate")
-	setwd("E:/Work/20_Projekte/280_Rainfall/R/10_data/2025-01-16_dataUpdate")
-#	setwd("C:/Users/Admin/OneDrive/Dokumente/280_Rainfall/R/10_data")
-
-
-
-
 ###	Load libraries
 
-#	install.packages("dplyr")
-	library(dplyr)
-#	install.packages("lubridate")
-	library(lubridate)
-#	install.packages("anytime")
-	library(anytime)
-#	install.packages("xtable")
-	library(xtable)
-#	install.packages("raster")
-	library(raster)
+#	install.packages("devtools")
+	library(devtools)
 #	install.packages("usmap")
 #	library(usmap)
-
+	install_github("markusfritsch/prcpFC")
+	library(prcpFC)
 
 
 
@@ -54,8 +35,8 @@ rm(list=ls())
 
 ###	Compile anomaly data based on imputed time series
 
-load("raindata.RData")
-dat.tmp			<- raindata[,-1]
+data("raindata6024")
+dat.tmp			<- raindata6024[,-1]
 mean(colMeans(dat.tmp))
 median(colMeans(dat.tmp))
 
@@ -88,59 +69,14 @@ dat_demeded	<- dat.tmp - apply(refMeds, FUN = rep, MARGIN = 2, times = 65)
 
 
 ###
-###	Add Koppen climate zones to station meta data and generate objects with station IDs for world regions
+###	Load station meta data with climate zone classification and generate objects with station IDs for world regions
 ###
 
 
-###	Read in koppen climate zone classification data
+###	Read in station meta data with koppen climate zone classification
 
-kop2			<- read.table("1976-2000_ASCII.txt", header = TRUE)	# source: 
-kop2[, 3]		<- factor(kop2[, 3])
-names(kop2)
-coordinates(kop2)	<- ~ Lon + Lat
-gridded(kop2)	<- TRUE
-raster2		<- raster(kop2)
-#levelplot(raster2)
-
-k.dat2	<- raster2
-
-
-###	Read in monitoring station meta data
-
-#data.frame for all stations
-stat		<- readLines("D:/Work/20_Projekte/280_Rainfall/R/10_data/2025-01-16_dataUpdate/ghcnd-stations_2025-01-16.txt")
-stat2		<- matrix(data = NA, ncol = 8, nrow = length(stat))
-for(i in 1:length(stat)){
-  stat2[i,1]	<- gsub(" ", "", substr(stat[i], start = 1, stop = 11), fixed = TRUE)
-  stat2[i,2]	<- gsub(" ", "", substr(stat[i], start = 13, stop = 20), fixed = TRUE)
-  stat2[i,3]	<- gsub(" ", "", substr(stat[i], start = 22, stop = 30), fixed = TRUE)
-  stat2[i,4]	<- gsub(" ", "", substr(stat[i], start = 32, stop = 37), fixed = TRUE)
-  stat2[i,5]	<- substr(stat[i], start = 42, stop = 70)
-  stat2[i,6]	<- gsub(" ", NA, substr(stat[i], start = 39, stop = 40))
-  stat2[i,7]	<- gsub(" ", NA, substr(stat[i], start = 73, stop = 76))
-  stat2[i,8]	<- substr(stat[i], start = 81, stop = 86)
-}
-stat2				<- data.frame(stat2)
-stat2[, c(2:4, 8)]	<- lapply(stat2[, c(2:4, 8)], FUN = as.numeric)
-names(stat2)		<- c("statID", "lat", "lon", "alt", "statName", "stateNorthAm", "network", "aa")
-
-
-#add Koppen classification to station meta data
-statK2 <- extract(x = k.dat2, y = stat2[ , c(3,2)], factors = TRUE, df = TRUE)	# Koppen-Dataset ist 'long-lat'; Stationen-Dataset 'lat-long'
-
-stat2.2 <- cbind(stat2[,c(1:6)], statK2[,2])
-names(stat2.2)	<- c("statID", "lat", "lon", "alt", "statName", "stateUS", "koppen2")
-
-stat2.2$koppen2.tmp	<- sapply(stat2.2$koppen2, nchar)
-stat2.2$koppen2.cz	<- substr(stat2.2$koppen2, start = 1, stop = 1)
-stat2.2$koppen2.ps	<- ifelse(stat2.2$koppen2.tmp == 3
-						, yes = substr(stat2.2$koppen2, start = 2, stop = 2)
-						, no = "")
-stat2.2$koppen2.ts	<- ifelse(stat2.2$koppen2.tmp == 3
-						, yes = substr(stat2.2$koppen2, start = 3, stop = 3)
-						, no = substr(stat2.2$koppen2, start = 2, stop = 2))
-
-stat2.2 		<- cbind(stat2.2, stat2$statID %in% colnames(dat_demeded))
+data("ghcndStations")
+stat2.2 		<- cbind(ghcndStations, ghcndStations$statID %in% colnames(dat_demeded))
 names(stat2.2)[12]	<- "is.in.data"
 
 
@@ -251,8 +187,8 @@ stat_usCont		<- stat_usCont[!is.na(stat_usCont$koppen2), ]
 
 
 #employ koppen climate zones to sample from precipitation anomaly data
-load(file = "rainresults.RData")
-dat.tmp<- rainresults[rainresults$statID %in% colnames(raindata)[-1], ]
+data("rainresults")
+dat.tmp	<- rainresults[rainresults$statID %in% colnames(raindata6024)[-1], ]
 nrow(dat.tmp[dat.tmp$ddiff != 0, ])/nrow(dat.tmp)
 #fraction of stations in dataset where d estimates differ
 
