@@ -3,7 +3,7 @@
 \docType{data}
 \name{ghcndStations}
 \alias{ghcndStations}
-\title{Global Historical Climate Network daily (GHCNd) precipitation data from 2000-2023}
+\title{Global Historical Climate Network daily (GHCNd) station meta data with Koppen climate classification}
 \format{
 A dataset with 118492 rows and 11 variables containing:
 \describe{
@@ -24,9 +24,8 @@ A dataset with 118492 rows and 11 variables containing:
 data(ghcndStations)
 }
 \description{
-Monthly precipitation data from the monitoring stations of
-the Global Historical Climate Network daily (GHCNd) from 
-January 1960 until December 2024. The dataset contains the
+Meta data on the monitoring stations of the Global Historical
+Climate Network daily (GHCNd). The dataset contains the
 variables station identifier, latitude, longitude, altitude,
 station name, US state, network, aa, koppen climate
 classification, koppen climate zone, koppen precipitation

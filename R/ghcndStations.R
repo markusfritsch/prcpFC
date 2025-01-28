@@ -1,8 +1,7 @@
-#' Global Historical Climate Network daily (GHCNd) precipitation data from 2000-2023
+#' Global Historical Climate Network daily (GHCNd) station meta data with Koppen climate classification
 #'
-#' Monthly precipitation data from the monitoring stations of
-#' the Global Historical Climate Network daily (GHCNd) from 
-#' January 1960 until December 2024. The dataset contains the
+#' Meta data on the monitoring stations of the Global Historical
+#' Climate Network daily (GHCNd). The dataset contains the
 #' variables station identifier, latitude, longitude, altitude,
 #' station name, US state, network, aa, koppen climate
 #' classification, koppen climate zone, koppen precipitation
