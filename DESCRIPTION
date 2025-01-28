@@ -28,4 +28,4 @@ BugReports: https://github.com/markusfritsch/prcpFC/issues
 VignetteBuilder: R.rsp
 Encoding: UTF-8
 Classification/JEL: C18, C32, C52, C53, Q54
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
