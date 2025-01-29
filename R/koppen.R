@@ -16,7 +16,7 @@
 #' \insertCite{koppen1936geographische}{prcpFC}. For the
 #' employed thresholds, see \insertCite{beldaEtAl2014climate}{prcpFC}
 #'
-#' @name rainresults
+#' @name koppen
 #'
 #' @docType data
 #'
