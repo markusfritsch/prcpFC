@@ -15,6 +15,12 @@
 	library(dplyr)
 #	install.packages("snowfall")
 	library(snowfall)
+#	install.packages("arfima")
+	library(arfima)
+#	install.packages("longmemo")
+	library(longmemo)
+#	install.packages("memochange")
+	library(memochange)
 	install_github("markusfritsch/prcpFC")
 	library(prcpFC)
 
@@ -68,10 +74,50 @@ raintib <- filter(raindata6019_demeded, as.numeric(substr(date, 1, 4))>=1990)
 
 #################################
 
+my_arfimafit <- function(x, maxp, maxq, criterion="BIC"){
+  pqcombis <- expand.grid(p=0:maxp, q=0:maxq)
+  allfits <- mapply(function(p,q){cat(paste0("p=",p,", q=",q,"\n"));arfima::arfima(x,order=c(p,0,q),dmean=FALSE,quiet=TRUE)},
+                    pqcombis$p, pqcombis$q, SIMPLIFY=FALSE)
+  if(criterion=="BIC"){
+    bestfitindex <- which.min(sapply(allfits, function(i) suppressWarnings(tryCatch(summary(i)$bics,error=function(cond){return(NA)}))))
+  }else if(criterion=="AIC"){
+    bestfitindex <- which.min(sapply(allfits, function(i) suppressWarnings(tryCatch(summary(i)$aics,error=function(cond){return(NA)}))))
+  }
+  bestfit <- allfits[[bestfitindex]]
+  bestpq <- as.matrix(pqcombis)[bestfitindex,]
+  bestphis <- bestfit$modes[[1]]$phi
+  bestthetas <- bestfit$modes[[1]]$theta 
+  bestd <- bestfit$modes[[1]]$dfrac
+  bestorder <- round(c(bestpq[1],d=bestd,bestpq[2]),2)
+  return(list(fit=bestfit, order=bestorder, pars=list(phi=bestphis, d=bestd, theta=bestthetas)))
+}
+
+my_prewhitening <- function(x){  # following [Qu 2011, Sec. 5]
+  mu <- mean(x)
+  bestfit <- my_arfimafit(x-mu, maxp=1, maxq=1, criterion="AIC")
+  order <- c(bestfit$order[1],0,bestfit$order[3])
+  fixed <- mu   # coefficients (phi, theta, mu)
+  if(order[3]==1){
+    fixed <- c(-bestfit$pars$theta, fixed)
+    if(abs(fixed[1])>0.99){
+      fixed[1] <- sign(fixed[1])*0.99
+    }
+  }
+  if(order[1]==1){
+    fixed <- c(bestfit$pars$phi, fixed)
+    if(abs(fixed[1])>0.99){
+      fixed[1] <- sign(fixed[1])*0.99
+    }
+  }
+  prewhitefit <- stats::arima(x,order=order,fixed=fixed,include.mean=TRUE,transform.pars=FALSE)
+  return(list(arfimafit=bestfit, armafit=prewhitefit, prewhitened=as.vector(prewhitefit$residuals)))
+}
+
+
 sfInit(parallel=TRUE, cpus=15)
-sfExport("prcpFC::my_arfimafit")
+sfExport("my_arfimafit")
 sfExport("raintib")
-results_prewhitening <- sfLapply(raintib[,-1], prcpFC::my_prewhitening)
+results_prewhitening <- sfLapply(raintib[,-1], my_prewhitening)
 sfStop()
 
 raintib_prewhitened <- tibble(date=raintib$date,
@@ -97,16 +143,85 @@ raintib <- filter(raindata6019_demeded, as.numeric(substr(date, 1, 4))>=1990)
 
 #################################
 
+my_R.LW <- function (d, peri, m, n, l=1){
+  lambda <- 2*pi/n*(l:m)
+  K <- log(1/(m-l+1)*(sum(peri[l:m]*(lambda)^(2*d))))-2*d/(m-l+1)*sum(log(lambda))
+  return(K)
+}
+
+
+my_LW <- function(data, m, int=c(-0.5,2.5), diff_param=1, l=1){
+  n <- length(data)
+  peri <- longmemo::per(data)[-1]
+  d.hat <- optimize(f=my_R.LW, interval=int, peri=peri, m=m, n=n, l=l)$minimum
+  return(d.hat) 
+}
+
+
+my_houLW <- function(data, m, int=c(-0.4999,0.99)){
+  n <- length(data)
+  peri <- longmemo::per(data)[-1]
+  #peri <- longmemo::per(data)[2:(m+1)]
+  out <- optim(par=c(0,0.1), fn=my_J.M, peri=peri, m=m, n=n,
+               method="L-BFGS-B", lower=c(int[1],0), upper=c(int[2],10000))  # lower=c(int[1],0.0001)
+  d.hat <- out$par[1]
+  return(d.hat) 
+  # return(out$par) # zur Kontrolle von theta (wenn 0 dann keine low frequency contaminations)
+}
+
+
+my_Qu <- function (data, m, epsilon = 0.05){
+  n <- length(data)
+  m <- min(m, floor(n/2))
+  r.grid <- 1/m
+  r <- seq(epsilon, 1, r.grid)
+  peri <- longmemo::per(data)[-1]
+  lambdaj <- 2 * pi * 1:floor(n/2)/n
+  nuj <- log(lambdaj[1:m]) - mean(log(lambdaj[1:m]))
+  d.hat <- my_LW(data, m = m)
+  G.hat <- mean(lambdaj[1:m]^(2 * d.hat) * peri[1:m])
+  mr <- floor(m * r)
+  if (mr[1] < 1) {
+    mr <- mr[-1]
+  }
+  W.aux <- 0
+  for (i in mr) {
+    W.aux[i] <- 1/sqrt(sum(nuj[1:m]^2)) * abs(sum(nuj[1:i] * 
+                                                    (peri[1:i]/(G.hat * lambdaj[1:i]^(-2 * d.hat)) - 
+                                                       1)))
+  }
+  W.aux <- na.omit(W.aux)
+  crit <- cbind(c(1.118, 1.252, 1.374, 1.517), c(1.022, 1.155, 
+                                                 1.277, 1.426))
+  colnames(crit) <- c("eps=.02", "eps=.05")
+  rownames(crit) <- c("alpha=.1", "alpha=.05", 
+                      "alpha=.025", "alpha=.01")
+  list(W.stat = max(W.aux), CriticalValues = crit)
+}
+
+
+my_J.M <- function (vec, peri, m, n){
+  d <- vec[1]
+  theta <- vec[2]
+  lambda <- 2*pi/n*(1:m)
+  g.k <- lambda^(-2*d)+(theta*lambda^(-2)/n)
+  K <- log((1/m)*sum(peri[1:m]/g.k)) + sum(log(g.k))/m
+  #K <- log((1/m)*sum(peri/g.k)) + sum(log(g.k))/m
+  return(K)
+}
+
+
+
 n <- nrow(raintib)    # keep epsilon=0.05 for both sample sizes
 m0.7 <- floor(n^0.7)
 m0.6 <- floor(n^0.6)  # only for short-run dynamics
 
 LManalysis <- function(x){
-  Qu <- prcpFC::my_Qu(x, m=m0.7, epsilon=0.05)$W.stat
-  LW0.6 <- prcpFC::my_LW(data=x,m=m0.6)
-  LW <- prcpFC::my_LW(data=x,m=m0.7)
-  houLW0.6 <- prcpFC::my_houLW(data=x,m=m0.6)
-  houLW <- prcpFC::my_houLW(data=x,m=m0.7)
+  Qu <- my_Qu(x, m=m0.7, epsilon=0.05)$W.stat
+  LW0.6 <- my_LW(data=x,m=m0.6)
+  LW <- my_LW(data=x,m=m0.7)
+  houLW0.6 <- my_houLW(data=x,m=m0.6)
+  houLW <- my_houLW(data=x,m=m0.7)
   results <- c("Qu"=Qu,"LW0.6"=LW0.6,"LW"=LW,"houLW0.6"=houLW0.6,"houLW"=houLW)
   return(results)
 }
@@ -185,7 +300,8 @@ allresults <- allresults %>%
   mutate(ddiff = LW-bestd)
 
 
-rainresults <- tibble(xvars,
+data(ghcndStations)
+rainresults <- tibble(ghcndStations[ghcndStations$statID %in% colnames(raintib)[-1], c(1:4,7,9:11)],
                   select(allresults,  # zvars and destims
                          quspurious5, quspurious10, meanbreak, armanoise, potentially_contaminated,
                          LW, LWmixed, houLW, houLWmixed, bestd, ddiff))
