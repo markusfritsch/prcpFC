@@ -96,7 +96,6 @@ names(stat2.2)[12]	<- "is.in.data"
 
 ###	Compile anomaly data based on imputed time series
 
-data("raindata6019")
 dat.tmp			<- raindata6019[,-1]
 mean(colMeans(dat.tmp))
 median(colMeans(dat.tmp))
@@ -411,11 +410,126 @@ gridExtra::grid.arrange(m.p, m.p1,
 
 dat	<- dat_demeded
 
-dat	<- dat[dat$statID %in% stat_usContmT$statID, ]
+dat	<- dat[, colnames(dat) %in% stat_usContmT$statID]
 
 
 
-#JS created figure and also has code!
+left.dens	<- density(unlist(dat[1:360, ]), n = 10000)
+rght.dens	<- density(unlist(dat[361:720, ]), n = 10000)
+
+
+col.set	<- c("#6b625d", "#2266ee", "#c4bdb7")
+
+
+ord.range	<- c(-1, 1)*1200
+
+
+#	pdf(file = "img/Density_CDens.pdf", height = 2, width = 8)
+
+par(mfrow = c(1, 2), mgp = c(2, 1, 0), mai = c(0.4, 0.4, 0.1, 0.2))
+
+
+plot(
+  x		= c(0, 1),
+  y		= c(0, 1),
+  xlim	= ord.range,
+  ylim	= c(-0.5, 0.5),
+  type	= "n",
+  xlab	= "",		# Month",
+  ylab	= "",		# Precipitation anomaly",
+  xaxs	= "i",
+  yaxs	= "i",
+  yaxt	= "n",
+# xaxt	= "n", 
+  frame.plot = FALSE
+)
+
+axis(side = 1, at = c(-1000, -500, 0, 500, 1000), tick = FALSE)
+abline(v = 0, col = col.set[3])
+
+polygon(
+  x	= rght.dens$x,
+  y	= rght.dens$y/max(rght.dens$y)/2.05,
+  border = col.set[2], lwd = 1, lty = 1
+)
+polygon(
+  x	= left.dens$x,
+  y	= -1*left.dens$y/max(left.dens$y)/2.05,
+  border = col.set[1], lwd = 1, lty = 1
+)
+abline(h = 0, col = col.set[3])
+
+    lines(x = rep(quantile(unlist(dat[1:360, ]), probs = 0.5), times = 2), y = c(-0.5, 0), col = col.set[1], lwd = 1)
+    lines(x = rep(quantile(unlist(dat[361:720, ]), probs = 0.5), times = 2), y = c(0.5, 0), col = col.set[2], lwd = 1)
+
+    lines(x = rep(quantile(unlist(dat[1:360, ]), probs = 0.25), times = 2), y = c(-0.5, 0), col = col.set[1], lwd = 1)
+    lines(x = rep(quantile(unlist(dat[361:720, ]), probs = 0.25), times = 2), y = c(0.5, 0), col = col.set[2], lwd = 1)
+    lines(x = rep(quantile(unlist(dat[1:360, ]), probs = 0.75), times = 2), y = c(-0.5, 0), col = col.set[1], lwd = 1)
+    lines(x = rep(quantile(unlist(dat[361:720, ]), probs = 0.75), times = 2), y = c(0.5, 0), col = col.set[2], lwd = 1)
+
+    lines(x = rep(quantile(unlist(dat[1:360, ]), probs = 0.1), times = 2), y = c(-0.5, 0), col = col.set[1], lwd = 1)
+    lines(x = rep(quantile(unlist(dat[361:720, ]), probs = 0.1), times = 2), y = c(0.5, 0), col = col.set[2], lwd = 1)
+    lines(x = rep(quantile(unlist(dat[1:360, ]), probs = 0.9), times = 2), y = c(-0.5, 0), col = col.set[1], lwd = 1)
+    lines(x = rep(quantile(unlist(dat[361:720, ]), probs = 0.9), times = 2), y = c(0.5, 0), col = col.set[2], lwd = 1)
+
+
+text(x = -900, y = -0.25, labels = "1960-1989", col = col.set[1])
+text(x = -900, y = 0.25, labels = "1990-2019", col = col.set[2])
+
+
+
+
+plot(
+  x		= c(0, 1),
+  y		= c(0, 1),
+  xlim	= ord.range,
+  ylim	= c(0, 1),
+  type	= "n",
+  xlab	= "",		# Month",
+  ylab	= "",		# Precipitation anomaly",
+  xaxs	= "i",
+  yaxs	= "i",
+  yaxt	= "n",
+# xaxt	= "n", 
+  frame.plot = FALSE
+)
+
+#	axis(side = 1, at = c(-1000, -500, 0, 500, 1000), tick = FALSE)
+axis(side = 2, at = 0:10/4, las = 1)
+
+#	abline(v = 0, col = col.set[3])
+
+lines(
+  x	= rght.dens$x,
+  y	= cumsum(rght.dens$y)/sum(rght.dens$y),
+  col = col.set[2], lwd = 1, lty = 1
+)
+lines(
+  x	= left.dens$x,
+  y	= cumsum(left.dens$y)/sum(left.dens$y),
+  col = col.set[1], lwd = 1, lty = 1
+)
+
+lines(x = rep(quantile(unlist(dat[1:360, ]), probs = 0.5), times = 2), y = c(0, 0.5), col = col.set[1], lwd = 1)
+lines(x = rep(quantile(unlist(dat[361:720, ]), probs = 0.5), times = 2), y = c(0, 0.5), col = col.set[2], lwd = 1)
+
+lines(x = rep(quantile(unlist(dat[1:360, ]), probs = 0.9), times = 2), y = c(0, 0.9), col = col.set[1], lwd = 1)
+lines(x = rep(quantile(unlist(dat[361:720, ]), probs = 0.9), times = 2), y = c(0, 0.9), col = col.set[2], lwd = 1)
+
+lines(x = rep(quantile(unlist(dat[1:360, ]), probs = 0.1), times = 2), y = c(0, 0.1), col = col.set[1], lwd = 1)
+lines(x = rep(quantile(unlist(dat[361:720, ]), probs = 0.1), times = 2), y = c(0, 0.1), col = col.set[2], lwd = 1)
+
+
+
+
+#dev.off()
+
+
+
+
+
+
+
 
 
 
@@ -865,7 +979,7 @@ gridExtra::grid.arrange(m.pD, m.p2, nrow = 2)
 #dev.off()
 
 
-#pdf(file = "img/mapsDAndDstar.pdf", width=8, height=8)
+#pdf(file = "img/mapsDandDstar.pdf", width=8, height=6)
 gridExtra::grid.arrange(m.pD, m.p2, nrow = 2)
 #dev.off()
 
@@ -873,15 +987,6 @@ gridExtra::grid.arrange(m.pD, m.p2, nrow = 2)
 
 
 
-
-
-###
-###	Fig.7: Pairwise precipitation anomaly correlations vs. pairwise Euclidean Distance for each memory behavior
-###
-
-
-
-#JS created figure and also has code! 
 
 
 

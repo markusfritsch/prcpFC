@@ -23,17 +23,9 @@
 
 
 
-
-###	Clear Workspace
-
-rm(list=ls())
-
-
-
-
 ###	Load data
 
-#source("00_dataPreprocessing_2025-01-28")		#note that this script needs to be run first
+#source("00_dataPreprocessing_2025-01-29")		#note that this script needs to be run first
 
 
 
@@ -77,6 +69,8 @@ for(i in 1:ncol(dat_demeded_rs)){
 }
 
 
+
+
 #generate 1,...,12 step ahead forecasts according to arfima model based on dLW, bestd and drot
 for(i in 1:nrow(dat_rs)){
 
@@ -84,6 +78,9 @@ for(i in 1:nrow(dat_rs)){
   ts.tmp		<- dat_demeded_rs[, i]
   dLW.tmp		<- dat_rs$LW[i]
   bestd.tmp		<- dat_rs$bestd[i]
+  assign(paste("list.m.dLW_", i, sep = ""), value = list())
+  assign(paste("list.m.bestd_", i, sep = ""), value = list())
+  assign(paste("list.m.drot_", i, sep = ""), value = list())
 
   for(j in 1:(n.yrs*h+1)){
 
@@ -91,8 +88,11 @@ for(i in 1:nrow(dat_rs)){
     tend		<- 60*12+j-1
     dat.tmp		<- ts.tmp[ti:tend]
     m.dLW.tmp	<- forecast::arfima(y = dat.tmp, drange = c(dLW.tmp, dLW.tmp), estim = "mle")
+    assign(paste("list.m.dLW_", i, sep = ""), value = c(get(paste("list.m.dLW_", i, sep = "")), coef(m.dLW.tmp)))
     m.bestd.tmp	<- forecast::arfima(y = dat.tmp, drange = c(bestd.tmp, bestd.tmp), estim = "mle")
+    assign(paste("list.m.bestd_", i, sep = ""), value = c(get(paste("list.m.bestd_", i, sep = "")), coef(m.bestd.tmp)))
     m.drot.tmp	<- forecast::arfima(y = dat.tmp, drange = c(0.499999, 0.499999), estim = "mle")
+    assign(paste("list.m.drot_", i, sep = ""), value = c(get(paste("list.m.drot_", i, sep = "")), coef(m.drot.tmp)))
 
     # compute 1,2,...,12 step ahead forecasts of anomalies with arfima function of forecast package
 
@@ -110,20 +110,25 @@ fcErrArr_dLW	<- evalAno20to24 - resArr_dLW
 fcErrArr_bestd	<- evalAno20to24 - resArr_bestd
 fcErrArr_drot	<- evalAno20to24 - resArr_drot
 
+#compute absolute forecast errors for evaluation period (January 2020 until December 2024)
+absfcErrArr_dLW		<- abs(evalAno20to24 - resArr_dLW)
+absfcErrArr_bestd	<- abs(evalAno20to24 - resArr_bestd)
+absfcErrArr_drot	<- abs(evalAno20to24 - resArr_drot)
+
 #station names (third dimension of results and forecast error arrays)
 dat_rs$statID
 
 
 #set up results objects and compute mean forecast error
-res.mat_dLW		<- matrix(NA, nrow = length(dat_rs$statID), ncol = 12)
+res.mat_dLW	<- matrix(NA, nrow = length(dat_rs$statID), ncol = 12)
 res.mat_bestd	<- matrix(NA, nrow = length(dat_rs$statID), ncol = 12)
 res.mat_drot	<- matrix(NA, nrow = length(dat_rs$statID), ncol = 12)
 
 for(i in 1:length(dat_rs$statID)){
 
-  res.mat_dLW[i, ]	<- apply(fcErrArr_dLW[,,i], FUN = mean, MARGIN = 2, na.rm = TRUE)
-  res.mat_bestd[i, ]	<- apply(fcErrArr_bestd[,,i], FUN = mean, MARGIN = 2, na.rm = TRUE)
-  res.mat_drot[i, ]	<- apply(fcErrArr_drot[,,i], FUN = mean, MARGIN = 2, na.rm = TRUE)
+  res.mat_dLW[i, ]	<- apply(absfcErrArr_dLW[,,i], FUN = mean, MARGIN = 2, na.rm = TRUE)
+  res.mat_bestd[i, ]	<- apply(absfcErrArr_bestd[,,i], FUN = mean, MARGIN = 2, na.rm = TRUE)
+  res.mat_drot[i, ]	<- apply(absfcErrArr_drot[,,i], FUN = mean, MARGIN = 2, na.rm = TRUE)
 
 }
 
@@ -134,11 +139,11 @@ colMeans(res.mat_drot)
 
 #relative forecast errors
 mat		<- matrix(nrow = 3, ncol = 12)
-mat[1,]	<- colMeans(res.mat_dLW)/colMeans(res.mat_bestd)
-mat[2,]	<- colMeans(res.mat_bestd)/colMeans(res.mat_bestd)
-mat[3,]	<- colMeans(res.mat_drot)/colMeans(res.mat_bestd)
+mat[1,]	<- colMeans(res.mat_dLW)
+mat[2,]	<- colMeans(res.mat_bestd)
+mat[3,]	<- colMeans(res.mat_drot)
 
-xtable(mat)
+xtable(mat, digits = 0)
 
 
 
@@ -245,8 +250,13 @@ fcErrArr_dLW	<- evalAno20to24 - resArr_dLW
 fcErrArr_bestd	<- evalAno20to24 - resArr_bestd
 fcErrArr_drot	<- evalAno20to24 - resArr_drot
 
+#compute absolute forecast errors for evaluation period (January 2020 until December 2024)
+absfcErrArr_dLW		<- abs(evalAno20to24 - resArr_dLW)
+absfcErrArr_bestd	<- abs(evalAno20to24 - resArr_bestd)
+absfcErrArr_drot	<- abs(evalAno20to24 - resArr_drot)
+
 #station names (third dimension of results and forecast error arrays)
-dat_res$statID
+dat_rs$statID
 
 
 #set up results objects and compute mean forecast error
@@ -256,22 +266,23 @@ res.mat_drot	<- matrix(NA, nrow = length(dat_res$statID), ncol = 12)
 
 for(i in 1:length(dat_rs$statID)){
 
-  res.mat_dLW[i, ]	<- apply(fcErrArr_dLW[,,i], FUN = mean, MARGIN = 2, na.rm = TRUE)
-  res.mat_bestd[i, ]	<- apply(fcErrArr_bestd[,,i], FUN = mean, MARGIN = 2, na.rm = TRUE)
-  res.mat_drot[i, ]	<- apply(fcErrArr_drot[,,i], FUN = mean, MARGIN = 2, na.rm = TRUE)
+  res.mat_dLW[i, ]	<- apply(absfcErrArr_dLW[,,i], FUN = mean, MARGIN = 2, na.rm = TRUE)
+  res.mat_bestd[i, ]	<- apply(absfcErrArr_bestd[,,i], FUN = mean, MARGIN = 2, na.rm = TRUE)
+  res.mat_drot[i, ]	<- apply(absfcErrArr_drot[,,i], FUN = mean, MARGIN = 2, na.rm = TRUE)
 
 }
 
-#mean forecast errors
+#mean absolute forecast errors
 colMeans(res.mat_dLW)
 colMeans(res.mat_bestd)
 colMeans(res.mat_drot)
 
 #relative forecast errors
 mat		<- matrix(nrow = 3, ncol = 12)
-mat[1,]	<- colMeans(res.mat_dLW)/colMeans(res.mat_bestd)
-mat[2,]	<- colMeans(res.mat_bestd)/colMeans(res.mat_bestd)
-mat[3,]	<- colMeans(res.mat_drot)/colMeans(res.mat_bestd)
+mat[1,]	<- colMeans(res.mat_dLW)
+mat[2,]	<- colMeans(res.mat_bestd)
+mat[3,]	<- colMeans(res.mat_drot)
+
 
 
 
