@@ -865,8 +865,8 @@ gridExtra::grid.arrange(m.pD, m.p2, nrow = 2)
 #dev.off()
 
 
-#pdf(file = "img/mapsLWestimates2plots.pdf", width=8, height=8)
-gridExtra::grid.arrange(m.p, m.p2, nrow = 2)
+#pdf(file = "img/mapsDAndDstar.pdf", width=8, height=8)
+gridExtra::grid.arrange(m.pD, m.p2, nrow = 2)
 #dev.off()
 
 
