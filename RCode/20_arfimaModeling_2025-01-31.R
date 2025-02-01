@@ -551,10 +551,283 @@ xtable(mat3, digits = 0)
 
 
 
+#consider systematic patterns in forecast errors
+
+#set up results objects for evaluation based on climate zone and memory behavior and include positive forecast error
+#objects for table for main climate zone B
+res.mat_dLW_Bap_plus		<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_dLW_Bsm_plus		<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_dLW_Blm_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Bap_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Bsm_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Blm_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Bap_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Bsm_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Blm_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+
+#objects for table for main climate zone C
+res.mat_dLW_Cap_plus		<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_dLW_Csm_plus		<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_dLW_Clm_plus		<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Cap_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Csm_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Clm_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Cap_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Csm_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Clm_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+
+#objects for table for main climate zone D
+res.mat_dLW_Dap_plus		<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_dLW_Dsm_plus		<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_dLW_Dlm_plus		<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Dap_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Dsm_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Dlm_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Dap_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Dsm_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Dlm_plus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+
+
+#set up results objects for evaluation based on climate zone and memory behavior and include negative forecast error
+#objects for table for main climate zone B
+res.mat_dLW_Bap_minus		<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_dLW_Bsm_minus		<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_dLW_Blm_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Bap_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Bsm_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Blm_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Bap_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Bsm_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Blm_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+
+#objects for table for main climate zone C
+res.mat_dLW_Cap_minus		<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_dLW_Csm_minus		<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_dLW_Clm_minus		<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Cap_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Csm_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Clm_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Cap_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Csm_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Clm_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+
+#objects for table for main climate zone D
+res.mat_dLW_Dap_minus		<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_dLW_Dsm_minus		<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_dLW_Dlm_minus		<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Dap_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Dsm_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_bestd_Dlm_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Dap_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Dsm_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
+res.mat_drot_Dlm_minus	<- matrix(NA, nrow = nrow(resArr_dLW_US[-1,,]), ncol = 12)
 
 
 
-#out-of-sample forecasts for all monitoring stations
+data(rainresults)
+dat_res_US		<- rainresults[rainresults$statID %in% statID.UScontWOna, ]
+
+id.vec_Bap		<- dat_res_US$zone_c == "B" & dat_res_US$bestd < -0.1
+id.vec_Bsm		<- dat_res_US$zone_c == "B" & dat_res_US$bestd >= -0.1 & dat_res_US$bestd <= 0.1
+id.vec_Blm		<- dat_res_US$zone_c == "B" & dat_res_US$bestd >= 0.1
+id.vec_Cap		<- dat_res_US$zone_c == "C" & dat_res_US$bestd < -0.1
+id.vec_Csm		<- dat_res_US$zone_c == "C" & dat_res_US$bestd >= -0.1 & dat_res_US$bestd <= 0.1
+id.vec_Clm		<- dat_res_US$zone_c == "C" & dat_res_US$bestd >= 0.1
+id.vec_Dap		<- dat_res_US$zone_c == "D" & dat_res_US$bestd < -0.1
+id.vec_Dsm		<- dat_res_US$zone_c == "D" & dat_res_US$bestd >= -0.1 & dat_res_US$bestd <= 0.1
+id.vec_Dlm		<- dat_res_US$zone_c == "D" & dat_res_US$bestd >= 0.1
+
+
+
+
+for(j in 1:ncol(resArr_dLW)){
+
+  for(i in 1:nrow(resArr_dLW[-1,,])){
+
+    res.mat_dLW_Bap_plus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Bap] > 0)
+    res.mat_dLW_Bsm_plus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Bsm] > 0)
+    res.mat_dLW_Blm_plus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Blm] > 0)
+    res.mat_bestd_Bap_plus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Bap] > 0)
+    res.mat_bestd_Bsm_plus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Bsm] > 0)
+    res.mat_bestd_Blm_plus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Blm] > 0)
+    res.mat_drot_Bap_plus[i, j]		<- sum(fcErrArr_drot_US[i,j, id.vec_Bap] > 0)
+    res.mat_drot_Bsm_plus[i, j]		<- sum(fcErrArr_drot_US[i,j, id.vec_Bsm] > 0)
+    res.mat_drot_Blm_plus[i, j]		<- sum(fcErrArr_drot_US[i,j, id.vec_Blm] > 0)
+
+    res.mat_dLW_Cap_plus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Cap] > 0)
+    res.mat_dLW_Csm_plus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Csm] > 0)
+    res.mat_dLW_Clm_plus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Clm] > 0)
+    res.mat_bestd_Cap_plus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Cap] > 0)
+    res.mat_bestd_Csm_plus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Csm] > 0)
+    res.mat_bestd_Clm_plus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Clm] > 0)
+    res.mat_drot_Cap_plus[i, j]		<- sum(fcErrArr_drot_US[i,j, id.vec_Cap] > 0)
+    res.mat_drot_Csm_plus[i, j]		<- sum(fcErrArr_drot_US[i,j, id.vec_Csm] > 0)
+    res.mat_drot_Clm_plus[i, j]		<- sum(fcErrArr_drot_US[i,j, id.vec_Clm] > 0)
+
+    res.mat_dLW_Dap_plus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Dap] > 0)
+    res.mat_dLW_Dsm_plus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Dsm] > 0)
+    res.mat_dLW_Dlm_plus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Dlm] > 0)
+    res.mat_bestd_Dap_plus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Dap] > 0)
+    res.mat_bestd_Dsm_plus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Dsm] > 0)
+    res.mat_bestd_Dlm_plus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Dlm] > 0)
+    res.mat_drot_Dap_plus[i, j]		<- sum(fcErrArr_drot_US[i,j, id.vec_Dap] > 0)
+    res.mat_drot_Dsm_plus[i, j]		<- sum(fcErrArr_drot_US[i,j, id.vec_Dsm] > 0)
+    res.mat_drot_Dlm_plus[i, j]		<- sum(fcErrArr_drot_US[i,j, id.vec_Dlm] > 0)
+
+  }
+
+}
+
+
+
+for(j in 1:ncol(resArr_dLW)){
+
+  for(i in 1:nrow(resArr_dLW[-1,,])){
+
+    res.mat_dLW_Bap_minus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Bap] < 0)
+    res.mat_dLW_Bsm_minus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Bsm] < 0)
+    res.mat_dLW_Blm_minus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Blm] < 0)
+    res.mat_bestd_Bap_minus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Bap] < 0)
+    res.mat_bestd_Bsm_minus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Bsm] < 0)
+    res.mat_bestd_Blm_minus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Blm] < 0)
+    res.mat_drot_Bap_minus[i, j]	<- sum(fcErrArr_drot_US[i,j, id.vec_Bap] < 0)
+    res.mat_drot_Bsm_minus[i, j]	<- sum(fcErrArr_drot_US[i,j, id.vec_Bsm] < 0)
+    res.mat_drot_Blm_minus[i, j]	<- sum(fcErrArr_drot_US[i,j, id.vec_Blm] < 0)
+
+    res.mat_dLW_Cap_minus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Cap] < 0)
+    res.mat_dLW_Csm_minus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Csm] < 0)
+    res.mat_dLW_Clm_minus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Clm] < 0)
+    res.mat_bestd_Cap_minus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Cap] < 0)
+    res.mat_bestd_Csm_minus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Csm] < 0)
+    res.mat_bestd_Clm_minus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Clm] < 0)
+    res.mat_drot_Cap_minus[i, j]	<- sum(fcErrArr_drot_US[i,j, id.vec_Cap] < 0)
+    res.mat_drot_Csm_minus[i, j]	<- sum(fcErrArr_drot_US[i,j, id.vec_Csm] < 0)
+    res.mat_drot_Clm_minus[i, j]	<- sum(fcErrArr_drot_US[i,j, id.vec_Clm] < 0)
+
+    res.mat_dLW_Dap_minus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Dap] < 0)
+    res.mat_dLW_Dsm_minus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Dsm] < 0)
+    res.mat_dLW_Dlm_minus[i, j]		<- sum(fcErrArr_dLW_US[i,j, id.vec_Dlm] < 0)
+    res.mat_bestd_Dap_minus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Dap] < 0)
+    res.mat_bestd_Dsm_minus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Dsm] < 0)
+    res.mat_bestd_Dlm_minus[i, j]	<- sum(fcErrArr_bestd_US[i,j, id.vec_Dlm] < 0)
+    res.mat_drot_Dap_minus[i, j]	<- sum(fcErrArr_drot_US[i,j, id.vec_Dap] < 0)
+    res.mat_drot_Dsm_minus[i, j]	<- sum(fcErrArr_drot_US[i,j, id.vec_Dsm] < 0)
+    res.mat_drot_Dlm_minus[i, j]	<- sum(fcErrArr_drot_US[i,j, id.vec_Dlm] < 0)
+
+  }
+
+}
+
+
+#compute columns sums of "+" and "-" signs
+sum(id.vec_Bap)
+colSums(res.mat_dLW_Bap_plus, na.rm = TRUE)
+colSums(res.mat_bestd_Bap_plus, na.rm = TRUE)
+colSums(res.mat_drot_Bap_plus, na.rm = TRUE)
+
+colSums(res.mat_dLW_Bap_minus, na.rm = TRUE)
+colSums(res.mat_bestd_Bap_minus, na.rm = TRUE)
+colSums(res.mat_drot_Bap_minus, na.rm = TRUE)
+
+
+sum(id.vec_Bsm)
+colSums(res.mat_dLW_Bsm_plus, na.rm = TRUE)
+colSums(res.mat_bestd_Bsm_plus, na.rm = TRUE)
+colSums(res.mat_drot_Bsm_plus, na.rm = TRUE)
+
+colSums(res.mat_dLW_Bsm_minus, na.rm = TRUE)
+colSums(res.mat_bestd_Bsm_minus, na.rm = TRUE)
+colSums(res.mat_drot_Bsm_minus, na.rm = TRUE)
+
+
+sum(id.vec_Blm)
+colSums(res.mat_dLW_Blm_plus, na.rm = TRUE)
+colSums(res.mat_bestd_Blm_plus, na.rm = TRUE)
+colSums(res.mat_drot_Blm_plus, na.rm = TRUE)
+
+colSums(res.mat_dLW_Blm_minus, na.rm = TRUE)
+colSums(res.mat_bestd_Blm_minus, na.rm = TRUE)
+colSums(res.mat_drot_Blm_minus, na.rm = TRUE)
+
+
+
+
+sum(id.vec_Cap)
+colSums(res.mat_dLW_Cap_plus, na.rm = TRUE)
+colSums(res.mat_bestd_Cap_plus, na.rm = TRUE)
+colSums(res.mat_drot_Cap_plus, na.rm = TRUE)
+
+colSums(res.mat_dLW_Cap_minus, na.rm = TRUE)
+colSums(res.mat_bestd_Cap_minus, na.rm = TRUE)
+colSums(res.mat_drot_Cap_minus, na.rm = TRUE)
+
+
+sum(id.vec_Csm)
+colSums(res.mat_dLW_Csm_plus, na.rm = TRUE)
+colSums(res.mat_bestd_Csm_plus, na.rm = TRUE)
+colSums(res.mat_drot_Csm_plus, na.rm = TRUE)
+
+colSums(res.mat_dLW_Csm_minus, na.rm = TRUE)
+colSums(res.mat_bestd_Csm_minus, na.rm = TRUE)
+colSums(res.mat_drot_Csm_minus, na.rm = TRUE)
+
+
+sum(id.vec_Clm)
+colSums(res.mat_dLW_Clm_plus, na.rm = TRUE)
+colSums(res.mat_bestd_Clm_plus, na.rm = TRUE)
+colSums(res.mat_drot_Clm_plus, na.rm = TRUE)
+
+colSums(res.mat_dLW_Clm_minus, na.rm = TRUE)
+colSums(res.mat_bestd_Clm_minus, na.rm = TRUE)
+colSums(res.mat_drot_Clm_minus, na.rm = TRUE)
+
+
+
+
+sum(id.vec_Dap)
+colSums(res.mat_dLW_Dap_plus, na.rm = TRUE)
+colSums(res.mat_bestd_Dap_plus, na.rm = TRUE)
+colSums(res.mat_drot_Dap_plus, na.rm = TRUE)
+
+colSums(res.mat_dLW_Dap_minus, na.rm = TRUE)
+colSums(res.mat_bestd_Dap_minus, na.rm = TRUE)
+colSums(res.mat_drot_Dap_minus, na.rm = TRUE)
+
+
+sum(id.vec_Dsm)
+colSums(res.mat_dLW_Dsm_plus, na.rm = TRUE)
+colSums(res.mat_bestd_Dsm_plus, na.rm = TRUE)
+colSums(res.mat_drot_Dsm_plus, na.rm = TRUE)
+
+colSums(res.mat_dLW_Dsm_minus, na.rm = TRUE)
+colSums(res.mat_bestd_Dsm_minus, na.rm = TRUE)
+colSums(res.mat_drot_Dsm_minus, na.rm = TRUE)
+
+
+sum(id.vec_Dlm)
+colSums(res.mat_dLW_Dlm_plus, na.rm = TRUE)
+colSums(res.mat_bestd_Dlm_plus, na.rm = TRUE)
+colSums(res.mat_drot_Dlm_plus, na.rm = TRUE)
+
+colSums(res.mat_dLW_Dlm_minus, na.rm = TRUE)
+colSums(res.mat_bestd_Dlm_minus, na.rm = TRUE)
+colSums(res.mat_drot_Dlm_minus, na.rm = TRUE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#compute out-of-sample forecasts for all monitoring stations
 
 #precipitation anomaly forecasts 1 to 12 steps ahead
 fc_dLW			<- resArr_dLW[61,,]
