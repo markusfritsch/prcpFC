@@ -209,7 +209,8 @@ h		<- 12		#maximum steps ahead for which forecasts are generated
 w		<- 20		#forecast window size
 
 
-#objects to save 1,...,12 step ahead forecasts
+#objects to save 1,...,12 step ahead forecasts (one row for each time period in which a forecast is made;
+# one column for each h; third dimension: one entry for each time series/location at which a forecast is made)
 resArr_dLW		<- array(dim =c(n.yrs*12+1, h, ncol(dat_demeded)), data = NA)
 fcErrArr_dLW	<- array(dim =c(n.yrs*12+1, h, ncol(dat_demeded)), data = NA)
 resArr_bestd	<- array(dim =c(n.yrs*12+1, h, ncol(dat_demeded)), data = NA)
@@ -221,6 +222,7 @@ fcErrArr_drot	<- array(dim =c(n.yrs*12+1, h, ncol(dat_demeded)), data = NA)
 #object for forecast evaluation (actual precipitation anomalies structured according to forecast objects)
 evalAno20to24	<- array(dim =c(n.yrs*12+1, h, ncol(dat_demeded)), data = NA)
 
+#insert entries in evaluation object
 for(i in 1:ncol(dat_demeded)){
 
   for(j in 1:(nrow(dat_demeded[721:780, ])+1)){
