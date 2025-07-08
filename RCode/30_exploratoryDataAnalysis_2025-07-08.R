@@ -729,10 +729,10 @@ plot(sim_ap, type = "l", ylim = c(-5,5))
 
 
 #acf- and pacf-plots for anti-persistent-, short memory-, and long memory behavior
-exAcf_df <- data.frame(lag = 1:30, lm = forecast::Acf(sim_ap)$acf[-1],
-                        sm = forecast::Acf(sim_sm)$acf[-1], ap = forecast::Acf(sim_lm)$acf[-1])
-exPacf_df <- data.frame(lag = 1:30, lm = forecast::Pacf(sim_ap)$acf,
-                        sm = forecast::Pacf(sim_sm)$acf, ap = forecast::Pacf(sim_lm)$acf)
+exAcf_df <- data.frame(lag = 1:30, ap = forecast::Acf(sim_ap)$acf[-1],
+                        sm = forecast::Acf(sim_sm)$acf[-1], lm = forecast::Acf(sim_lm)$acf[-1])
+exPacf_df <- data.frame(lag = 1:30, ap = forecast::Pacf(sim_ap)$acf,
+                        sm = forecast::Pacf(sim_sm)$acf, lm = forecast::Pacf(sim_lm)$acf)
 
 ci_upper	<- qnorm(p = (1-alph/2))/sqrt(n)
 ci_lower	<- -qnorm(p = (1-alph/2))/sqrt(n)
@@ -793,7 +793,7 @@ lp6	<- ggplot(data = exPacf_df, mapping = aes(x = lag, y = ap)) +
 
 
 #pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/acfPacf.pdf", width=9, height=10)
-gridExtra::grid.arrange(lp1, lp4, lp2, lp5, lp3, lp6,
+gridExtra::grid.arrange(lp3, lp6, lp2, lp5, lp1, lp4,
                         nrow = 3)
 #dev.off()
 
