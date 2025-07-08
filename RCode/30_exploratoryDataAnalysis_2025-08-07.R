@@ -41,6 +41,10 @@
 	library(ggmap)
 #	install.package("dplyr")
 	library(dplyr)
+#	install.packages("forecast")
+  library(forecast)
+#	install.packages("arfima")
+  library(arfima)
 #	install.packages("devtools")
 	library(devtools)
 #	install.packages("xtable")
@@ -616,7 +620,7 @@ for(i in 1:length(czs.tmp)){
 		ylim(ymin,ymax) +
 		theme(panel.background=element_blank(),
 			axis.text.x=element_blank(),
-			axis.ticks.x=element_blank())
+			axis.ticks.x=element_blank(), axis.title.y = element_text(angle = 0))
   } else{
     l.p	<- ggplot() +
 		geom_hline(yintercept = 0, lty = 1, col = cols.tmp[6]) +
@@ -626,7 +630,7 @@ for(i in 1:length(czs.tmp)){
 		xlab("") + ylab(cz.tmp) +
 #		xlab("") + ylab(paste(m.tmp)) + ggtitle("Main climate zone B") +
 		ylim(ymin,ymax) +
-		theme(panel.background=element_blank())
+		theme(panel.background=element_blank(), axis.title.y = element_text(angle = 0))
   }
 
   assign(paste("l.p", cz.tmp, sep = ""), value = l.p)
@@ -689,6 +693,190 @@ which(dat.tmp> 30000)
 which(apply(FUN = max, dat.tmp, MARGIN = 2) > 30000)
 
 
+
+
+
+
+
+
+###
+###	Fig.4: ACF and PACF plots for simulated ARFIMA(0,d,0) data
+###
+
+
+#simulate ARFIMA(0,d,0) data
+seed		<- 42
+n		<- 1000
+alph		<- 0.05
+d_lm		<- 0.49
+
+d_ap		<- -0.49 
+
+d_sm		<- 0
+
+
+set.seed(seed)
+
+sim_lm	<- arfima::arfima.sim(n = n, model = list(dfrac = d_lm))
+sim_sm	<- arfima::arfima.sim(n = n, model = list(dfrac = d_sm))
+sim_ap	<- arfima::arfima.sim(n = n, model = list(dfrac = d_ap))
+
+#plots of raw time series
+par(mfrow = c(3,1))
+plot(sim_lm, type = "l", ylim = c(-5,5))
+plot(sim_sm, type = "l", ylim = c(-5,5))
+plot(sim_ap, type = "l", ylim = c(-5,5))
+
+
+#acf- and pacf-plots for anti-persistent-, short memory-, and long memory behavior
+exAcf_df <- data.frame(lag = 1:30, lm = forecast::Acf(sim_ap)$acf[-1],
+                        sm = forecast::Acf(sim_sm)$acf[-1], ap = forecast::Acf(sim_lm)$acf[-1])
+exPacf_df <- data.frame(lag = 1:30, lm = forecast::Pacf(sim_ap)$acf,
+                        sm = forecast::Pacf(sim_sm)$acf, ap = forecast::Pacf(sim_lm)$acf)
+
+ci_upper	<- qnorm(p = (1-alph/2))/sqrt(n)
+ci_lower	<- -qnorm(p = (1-alph/2))/sqrt(n)
+
+lp1	<- ggplot(data = exAcf_df, mapping = aes(x = lag, y = lm)) +
+  geom_hline(aes(yintercept = 0), col = cols.tmp[6]) +
+  geom_hline(aes(yintercept = ci_upper), col = cols.tmp[6], linetype = "dashed") +
+  geom_hline(aes(yintercept = ci_lower), col = cols.tmp[6], linetype = "dashed") +
+  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[2]) +
+  ylab("ACF") + xlab("Lag") + ylim(c(-0.4,0.75)) + xlim(0,30) +
+  theme(panel.background = element_blank(), axis.title.y = element_blank(),
+        plot.margin = unit(c(1,1,1,1.9), "cm"))
+
+lp2	<- ggplot(data = exAcf_df, mapping = aes(x = lag, y = sm)) +
+  geom_hline(aes(yintercept = 0), col = cols.tmp[6]) +
+  geom_hline(aes(yintercept = ci_upper), col = cols.tmp[6], linetype = "dashed") +
+  geom_hline(aes(yintercept = ci_lower), col = cols.tmp[6], linetype = "dashed") +
+  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[2]) +
+  ylab("ACF") + xlab("") + ylim(c(-0.4,0.75)) + xlim(0,30) +
+  theme(panel.background = element_blank(), axis.title.y = element_blank(),
+        plot.margin = unit(c(1,1,1,1.9), "cm"))
+
+lp3	<- ggplot(data = exAcf_df, mapping = aes(x = lag, y = ap)) +
+  geom_hline(aes(yintercept = 0), col = cols.tmp[6]) +
+  geom_hline(aes(yintercept = ci_upper), col = cols.tmp[6], linetype = "dashed") +
+  geom_hline(aes(yintercept = ci_lower), col = cols.tmp[6], linetype = "dashed") +
+  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[2]) +
+  ylab("ACF") + xlab("") + ylim(c(-0.4,0.75)) + xlim(0,30) +
+  theme(panel.background = element_blank(), axis.title.y = element_text(angle = 0),
+        plot.margin = unit(c(1,1,1,1), "cm"))
+
+lp4	<- ggplot(data = exPacf_df, mapping = aes(x = lag, y = lm)) +
+  geom_hline(aes(yintercept = 0), col = cols.tmp[6]) +
+  geom_hline(aes(yintercept = ci_upper), col = cols.tmp[6], linetype = "dashed") +
+  geom_hline(aes(yintercept = ci_lower), col = cols.tmp[6], linetype = "dashed") +
+  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[2]) +
+  ylab("PACF") + xlab("Lag") + ylim(c(-0.4,0.75)) + xlim(0,30) +
+  theme(panel.background = element_blank(), axis.title.y = element_blank(),
+        plot.margin = unit(c(1,1,1,2.2), "cm"))
+
+lp5	<- ggplot(data = exPacf_df, mapping = aes(x = lag, y = sm)) +
+  geom_hline(aes(yintercept = 0), col = cols.tmp[6]) +
+  geom_hline(aes(yintercept = ci_upper), col = cols.tmp[6], linetype = "dashed") +
+  geom_hline(aes(yintercept = ci_lower), col = cols.tmp[6], linetype = "dashed") +
+  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[2]) +
+  ylab("PACF") + xlab("") + ylim(c(-0.4,0.75)) + xlim(0,30) +
+  theme(panel.background = element_blank(), axis.title.y = element_blank(),
+        plot.margin = unit(c(1,1,1,2.2), "cm"))
+
+lp6	<- ggplot(data = exPacf_df, mapping = aes(x = lag, y = ap)) +
+  geom_hline(aes(yintercept = 0), col = cols.tmp[6]) +
+  geom_hline(aes(yintercept = ci_upper), col = cols.tmp[6], linetype = "dashed") +
+  geom_hline(aes(yintercept = ci_lower), col = cols.tmp[6], linetype = "dashed") +
+  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[2]) +
+  ylab("PACF") + xlab("") + ylim(c(-0.4,0.75)) + xlim(0,30) +
+  theme(panel.background = element_blank(), axis.title.y = element_text(angle = 0),
+        plot.margin = unit(c(1,1,1,1), "cm"))
+
+
+#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/acfPacf.pdf", width=9, height=10)
+gridExtra::grid.arrange(lp1, lp4, lp2, lp5, lp3, lp6,
+                        nrow = 3)
+#dev.off()
+
+
+
+
+
+
+
+###
+###	Fig.5: log periodogram vs. log frequency for simulated ARFIMA(0,d,0) data
+###
+
+
+#simulate ARFIMA(0,d,0) data
+seed		<- 42
+n		<- 1000
+alph		<- 0.05
+d_lm		<- 0.49
+
+d_ap		<- -0.49 
+
+d_sm		<- 0
+
+
+set.seed(seed)
+
+sim_lm	<- arfima::arfima.sim(n = n, model = list(dfrac = d_lm))
+sim_sm	<- arfima::arfima.sim(n = n, model = list(dfrac = d_sm))
+sim_ap	<- arfima::arfima.sim(n = n, model = list(dfrac = d_ap))
+
+#plots of raw time series
+par(mfrow = c(3,1))
+plot(sim_lm, type = "l", ylim = c(-5,5))
+plot(sim_sm, type = "l", ylim = c(-5,5))
+plot(sim_ap, type = "l", ylim = c(-5,5))
+
+
+#Figure according to Beran et al. (2012), Chapter 1.2 (f): Log(periodogram) vs. log(lambda)
+T	<- length(sim_ap)
+nj	<- floor(T/2)
+ir	<- complex(real = 0, imaginary = 1)
+freqs	<- 2*pi*(1:nj)/T
+peri_df	<- data.frame(freq_disc = log(1:nj), freq_cont = log(freqs), per_ap = log(as.vector(1/(2*pi*T)*abs(t(sim_ap)%*%exp(-ir*(1:T)%*%t(freqs)))^2)),
+                      per_sm = log(as.vector(1/(2*pi*T)*abs(t(sim_sm2)%*%exp(-ir*(1:T)%*%t(freqs)))^2)),
+                      per_lm = log(as.vector(1/(2*pi*T)*abs(t(sim_lm)%*%exp(-ir*(1:T)%*%t(freqs)))^2)))
+
+#for adding coefficient estimates
+lm4		<- lm(per_ap ~ freq_disc, data = peri_df)
+summary(lm4)
+lm5		<- lm(per_sm ~ freq_disc, data = peri_df)
+summary(lm5)
+lm6		<- lm(per_lm ~ freq_disc, data = peri_df)
+summary(lm6)
+
+fp4	<- ggplot(data = peri_df, mapping = aes(x = freq_disc, y = per_ap)) +
+  geom_point(col = cols.tmp[2]) +
+  geom_smooth(method = "lm", col = cols.tmp[5]) +
+  ylab(expression(paste("log(I(", lambda[j], "))", sep = ""))) + xlab("") + ylim(-11,6) +
+  annotate("text", label = paste("slope: ", round(as.numeric(coef(lm4)[2]), digits = 4), sep = ""), x = 0, hjust="left", y = -8.4, col = cols.tmp[5]) +
+  theme(panel.background = element_blank(), axis.title.y = element_text(angle = 0),
+        plot.margin = unit(c(1,1,1,1), "cm"))
+
+fp5	<- ggplot(data = peri_df, mapping = aes(x = freq_disc, y = per_sm)) +
+  geom_point(col = cols.tmp[2]) +
+  geom_smooth(method = "lm", col = cols.tmp[5]) +
+  ylab("") + xlab("") + ylim(-11,6) +
+  annotate("text", label = paste("slope: ", round(as.numeric(coef(lm5)[2]), digits = 4), sep = ""), x = 0, hjust="left", y = -4.6, col = cols.tmp[5]) +
+  theme(panel.background = element_blank(), axis.title.y = element_text(angle = 0),
+        plot.margin = unit(c(1,1,1,2.4), "cm"))
+
+fp6	<- ggplot(data = peri_df, mapping = aes(x = freq_disc, y = per_lm)) +
+  geom_point(col = cols.tmp[2]) +
+  geom_smooth(method = "lm", col = cols.tmp[5]) +
+  ylab("") + xlab(expression(lambda[j])) + ylim(-11,6) +
+  annotate("text", label = paste("slope: ", round(as.numeric(coef(lm6)[2]), digits = 4), sep = ""), x = 0, hjust="left", y = 0.2, col = cols.tmp[5]) +
+  theme(panel.background = element_blank(), axis.title.y = element_text(angle = 0),
+        plot.margin = unit(c(1,1,1,2.4), "cm"))
+
+#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/logPeri.pdf", width=9, height=10)
+gridExtra::grid.arrange(fp4, fp5, fp6,
+                        nrow = 3)
+#dev.off()
 
 
 
@@ -883,20 +1071,20 @@ d.p	<- ggplot() +
 	geom_point(data = stat_contUS, aes(x = LW, y = dstar), col = cols.tmp[8], cex = 1.2) +
 #	geom_point(data = stat_contUS, aes(x = LW, y = dstar), col = cols.tmp[6], cex = 1.2) +
 	xlab(expression(italic(hat(d)[LW]))) + ylab(expression(italic(hat(d))~"*")) +
-	theme(panel.background=element_blank())
+	theme(panel.background=element_blank(), axis.title.y = element_text(angle = 0))
 #pdf(file = "img/scPlotDandDstar.pdf", width=8, height=4)
 d.p
 #dev.off()
 
 
 
-#Fig B.12: World: scatterplot LW vs. dstar
+#Fig B.10: World: scatterplot LW vs. dstar
 d.p	<- ggplot() +
 	geom_abline(intercept = 0, slope = 1, col = cols.tmp[4], lwd = 1) +
 	geom_point(data = dat, aes(x = LW, y = dstar), col = cols.tmp[8], cex = 1.2) +
 #	geom_point(data = dat, aes(x = LW, y = dstar), col = cols.tmp[6], cex = 1.2) +
 	xlab(expression(italic(hat(d)[LW]))) + ylab(expression(italic(hat(d))~"*")) +
-	theme(panel.background=element_blank())
+	theme(panel.background=element_blank(), axis.title.y = element_text(angle = 0))
 #pdf(file = "img/scPlotDandDstarWorld.pdf", width=8, height=4)
 d.p
 #dev.off()
