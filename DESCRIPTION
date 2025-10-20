@@ -1,8 +1,8 @@
 Package: prcpFC
 Type: Package
 Title: Functions and data for monthly precipitation and precipitation anomaly forecasting
-Version: 0.1.1
-Date: 2025-07-08
+Version: 0.1.2
+Date: 2025-10-20
 Authors@R: c(person("Markus", "Fritsch", role = c("aut", "cre"),
 		email = "Markus.Fritsch@uni-Passau.de"),
 	person("Harry", "Haupt", role = c("aut"),
