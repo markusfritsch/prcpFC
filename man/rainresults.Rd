@@ -5,7 +5,7 @@
 \alias{rainresults}
 \title{Memory parameter estimates and diagnostics for precipitation time series}
 \format{
-A dataset with 2170 rows and 19 variables containing:
+A dataset with 2118 rows and 19 variables containing:
 \describe{
 \item{statID}{station identifier}
 \item{lat}{latitude (CRS WGS84)}
