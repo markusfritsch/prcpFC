@@ -30,7 +30,7 @@
 #'
 #' @usage data(rainresults)
 #'
-#' @format A dataset with 2118 rows and 19 variables containing:
+#' @format A dataset with 2170 rows and 19 variables containing:
 #' \describe{
 #' \item{statID}{station identifier}
 #' \item{lat}{latitude (CRS WGS84)}
