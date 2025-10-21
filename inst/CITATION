@@ -7,10 +7,5 @@ bibentry(bibtype = "Article",
 		person("Philipp", "Sibbertsen")),
 	journal = ("Working Paper"),
 	year = ("2025"),
-%	volume = (""),
-% number = (""),
-%  pages = (""),
-%	doi = (""),
-%	url = (""),
 	header = "To cite the dataset in publication, please use:"
 	)
