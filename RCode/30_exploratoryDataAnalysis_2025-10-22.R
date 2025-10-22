@@ -24,8 +24,6 @@
 	library(usmap)
 #	install.packages("ggplot2")
 	library(ggplot2)
-#	install.packages("RColorBrewer")
-#	library(RColorBrewer)
 #	install.packages("viridis")
 	library(viridis)
 #	install.packages("gridExtra")
@@ -57,6 +55,13 @@ rm(list=ls())
 
 
 
+###	Set working directory
+
+  setwd("D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img")
+
+
+
+
 
 ###
 ###	Data preprocessing function to create all required objects
@@ -71,12 +76,14 @@ dataPrepr.fct	<- function(
 
 ###	Clear workspace
 
-rm(list=ls())
+  rm(list=ls())
+
+
 
 
 ###	Specify colors
 
-cols.tmp		<<- c(
+  cols.tmp		<<- c(
 #				"#f58080"	# lightred
 				"#efa540"	# orange
 				,"#2266ee"	# blue
@@ -319,12 +326,12 @@ statesUS		<- sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
 mapUSstates	<- ggplot2::borders(database = "state", colour = cols.tmp[5], fill = NA) # create a layer of borders
 
 m.p	<- ggplot() + 
-	geom_raster(data = rasterUSDF, aes(x = x, y = y, fill = KoppenCliZs)) +
+	geom_raster(data = rasterUSDF, aes(x = x, y = y, fill = KoppenCliZs), show.legend = TRUE) +
 	scale_fill_viridis_d(name = "Climate Zone",
 			limits = c("Af", "Am", "As", "Aw", "BSh", "BSk", "BWh", "BWk",
 				"Cfa", "Cfb", "Cfc", "Csa", "Csb", "Csc", "Cwa", "Cwb", "Cwc",
 				"Dfa", "Dfb", "Dfc", "Dfd", "Dsa", "Dsb", "Dsc", "Dsd", "Dwa", "Dwb", "Dwc", "Dwd",
-				"EF", "ET"), alpha = 0.5) +
+				"EF", "ET"), alpha = 0.5, drop = FALSE) +
 	mapUSstates +
 	geom_point(data = rainresults[rainresults$statID %in% stat_usContmT$statID, ], aes(y = lat, x = lon),					# ts used in analysis
 		 color = cols.tmp[2], cex = 0.8, pch = 20) +
@@ -334,9 +341,7 @@ m.p	<- ggplot() +
 		axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank(),
 		legend.title = element_text(size = 20), legend.text = element_text(size = 20),
 		panel.background=element_blank())
-#pdf(file = "img/koppenClimZsUSstates.pdf", width=12, height=8)
 m.p
-#dev.off()
 
 
 tib.index			<- names(dat_demeded) %in% stat_usContmT$statID
@@ -400,14 +405,12 @@ m.p1	<- ggplot() +
 		axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank(),
 		legend.title = element_text(size = 20), legend.text = element_text(size = 20),
 		panel.background=element_blank())
-#pdf(file = "img/medianPrcpAnoKoppenUSstatesWoKoppen.pdf", width=12, height=8)
 m.p1
-#dev.off()
 
 
 
 #Fig.1
-#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/meanPrcpAnoKoppenUSstates.pdf", width=16, height=10)
+#pdf(file = paste(getwd(), "/meanPrcpAnoKoppenUSstates.pdf", sep = ""), width=16, height=10)
 gridExtra::grid.arrange(m.p, m.p1, 
 	nrow = 2)
 #dev.off()
@@ -447,7 +450,7 @@ ord.range	<- c(-1, 1)*1200
 
 
 #Fig.2
-#	pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/Density_CDens.pdf", height = 2, width = 8)
+#	pdf(file = paste(getwd(), "/Density_CDens.pdf", sep = ""), height = 2, width = 8)
 
 par(mfrow = c(1, 2), mgp = c(2, 1, 0), mai = c(0.4, 0.4, 0.1, 0.2))
 
@@ -624,7 +627,7 @@ for(i in 1:length(czs.tmp)){
 
 
 #Fig.3
-#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/stationsPrcpBCD.pdf", width = 10, height = 10)
+#pdf(file = paste(getwd(), "/stationsPrcpBCD.pdf", sep = ""), width = 10, height = 10)
 gridExtra::grid.arrange(l.pB, l.pC, l.pD,
 	nrow = 3)
 #dev.off()
@@ -710,10 +713,10 @@ sim_sm	<- arfima::arfima.sim(n = n, model = list(dfrac = d_sm))
 sim_ap	<- arfima::arfima.sim(n = n, model = list(dfrac = d_ap))
 
 #plots of raw time series
-par(mfrow = c(3,1))
-plot(sim_lm, type = "l", ylim = c(-5,5))
-plot(sim_sm, type = "l", ylim = c(-5,5))
-plot(sim_ap, type = "l", ylim = c(-5,5))
+#par(mfrow = c(3,1))
+#plot(sim_lm, type = "l", ylim = c(-5,5))
+#plot(sim_sm, type = "l", ylim = c(-5,5))
+#plot(sim_ap, type = "l", ylim = c(-5,5))
 
 
 #acf- and pacf-plots for anti-persistent-, short memory-, and long memory behavior
@@ -781,7 +784,7 @@ lp6	<- ggplot(data = exPacf_df, mapping = aes(x = lag, y = ap)) +
 
 
 #Fig.4
-#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/acfPacf.pdf", width=9, height=10)
+#pdf(file = paste(getwd(), "/acfPacf.pdf", sep = ""), width=9, height=10)
 gridExtra::grid.arrange(lp3, lp6, lp2, lp5, lp1, lp4,
                         nrow = 3)
 #dev.off()
@@ -867,7 +870,7 @@ fp6	<- ggplot(data = peri_df, mapping = aes(x = freq_disc, y = per_lm)) +
         plot.margin = unit(c(1,1,1,2.4), "cm"))
 
 #Fig.5
-#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/logPeri.pdf", width=9, height=10)
+#pdf(file = paste(getwd(), "/logPeri.pdf", sep = ""), width=9, height=10)
 gridExtra::grid.arrange(fp4, fp5, fp6,
                         nrow = 3)
 #dev.off()
@@ -1100,7 +1103,7 @@ h.pDstar	<- ggplot(data = stat_contUS, aes(x = dstar)) +
 	xlab(expression(italic(hat(d))~"*")) + ylab("") +
 	theme(panel.background=element_blank())
 
-#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/histsLRD.pdf", width=8, height=3)
+#pdf(file = paste(getwd(), "/histsLRD.pdf", sep = ""), width=8, height=3)
 gridExtra::grid.arrange(h.pLW, h.pDstar, 
 	nrow = 1)
 #dev.off()
@@ -1128,7 +1131,7 @@ h.pDstar_world	<- ggplot(data = dat, aes(x = dstar)) +
 	xlab(expression(italic(hat(d))~"*")) + ylab("") +
 	theme(panel.background=element_blank())
 
-#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/histsLRDworld.pdf", width=8, height=3)
+#pdf(file = paste(getwd(), "/histsLRDworld.pdf", sep = ""), width=8, height=3)
 gridExtra::grid.arrange(h.pLW_world, h.pDstar_world, 
 	nrow = 1)
 #dev.off()
@@ -1158,7 +1161,7 @@ d.p	<- ggplot() +
 #	geom_point(data = stat_contUS, aes(x = LW, y = dstar), col = cols.tmp[6], cex = 1.2) +
 	xlab(expression(italic(hat(d)[LW]))) + ylab(expression(italic(hat(d))~"*")) +
 	theme(panel.background=element_blank(), axis.title.y = element_text(angle = 0))
-#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/scPlotDandDstar.pdf", width=8, height=4)
+#pdf(file = paste(getwd(), "/scPlotDandDstar.pdf", sep = ""), width=8, height=4)
 d.p
 #dev.off()
 
@@ -1171,7 +1174,7 @@ d.p	<- ggplot() +
 #	geom_point(data = dat, aes(x = LW, y = dstar), col = cols.tmp[6], cex = 1.2) +
 	xlab(expression(italic(hat(d)[LW]))) + ylab(expression(italic(hat(d))~"*")) +
 	theme(panel.background=element_blank(), axis.title.y = element_text(angle = 0))
-#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/scPlotDandDstarWorld.pdf", width=8, height=4)
+#pdf(file = paste(getwd(), "/scPlotDandDstarWorld.pdf", sep = ""), width=8, height=4)
 d.p
 #dev.off()
 
@@ -1224,7 +1227,7 @@ m.p2	<- ggplot() +
 
 
 #Fig.8
-#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/mapsDandDstar.pdf", width=8, height=6)
+#pdf(file = paste(getwd(), "/mapsDandDstar.pdf", sep = ""), width=8, height=6)
 gridExtra::grid.arrange(m.pD, m.p2, nrow = 2)
 #dev.off()
 
@@ -1309,7 +1312,7 @@ seasPlot	<- ggplot(data = dat.tmp1) +
 		panel.background = element_blank())
 
 #Fig.A.9
-#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/seasonPlot.pdf", width=8, height=4)
+#pdf(file = paste(getwd(), "/seasonPlot.pdf", sep = ""), width=8, height=4)
 seasPlot
 #dev.off()
 
@@ -1406,7 +1409,7 @@ gmapK		<- ggplot() +
 	theme(axis.text.x = element_blank(), axis.text.y = element_blank(),
 		axis.ticks.x = element_blank(), axis.ticks.y = element_blank(),
 		panel.background = element_blank())
-#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/koppenClimZs.pdf", width=12, height=8)
+#pdf(file = paste(getwd(), "/koppenClimZs.pdf", sep = ""), width=12, height=8)
 gmapK
 #dev.off()
 
