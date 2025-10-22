@@ -20,13 +20,20 @@ Durre et al. (2010) https://doi.org/10.1175/2010JAMC2375.1, and
 Durre, Menne, and Vose (2008) https://doi.org/10.1175/2007JAMC1706.1.
 
 
+To install the package please use:
+```{r}
+library(devtools)
+install_github("markusfritsch/prcpFC")
+```
+
+
 
 ## Computational details for reproducing the results
 
 There are three R scripts generating the results.
--`10_longmemo_withPlots_2025-10-22.R`: estimates the memory parameters
--`20_arfimaModeling_2025-10-22.R`: generates and evaluates all forecasts and the corresponding tables of results
--`30_exploratoryDataAnalysis_2025-10-22.R`: generates all further tables and figures
+- `10_longmemo_withPlots_2025-10-22.R`: estimates the memory parameters
+- `20_arfimaModeling_2025-10-22.R`: generates and evaluates all forecasts and the corresponding tables of results
+- `30_exploratoryDataAnalysis_2025-10-22.R`: generates all further tables and figures
 
 Please adjust the working directory in the codes to generate the figures.
 
@@ -56,9 +63,5 @@ xtable(1.8-4)
 
 
 
-To install the package please use:
-```{r}
-library(devtools)
-install_github("markusfritsch/prcpFC")
-```
+
 
