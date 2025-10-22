@@ -252,10 +252,6 @@ cols.tmp		<<- c(
 
 
 
-#required??
-#mp <- NULL
-#mapWorld <- ggplot2::annotation_borders("world", colour = cols.tmp[5], fill=NA) # create a layer of borders
-
 
 
 
@@ -411,7 +407,7 @@ m.p1
 
 
 #Fig.1
-#pdf(file = "img/meanPrcpAnoKoppenUSstates.pdf", width=16, height=10)
+#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/meanPrcpAnoKoppenUSstates.pdf", width=16, height=10)
 gridExtra::grid.arrange(m.p, m.p1, 
 	nrow = 2)
 #dev.off()
@@ -451,7 +447,7 @@ ord.range	<- c(-1, 1)*1200
 
 
 #Fig.2
-#	pdf(file = "img/Density_CDens.pdf", height = 2, width = 8)
+#	pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/Density_CDens.pdf", height = 2, width = 8)
 
 par(mfrow = c(1, 2), mgp = c(2, 1, 0), mai = c(0.4, 0.4, 0.1, 0.2))
 
@@ -628,7 +624,7 @@ for(i in 1:length(czs.tmp)){
 
 
 #Fig.3
-#pdf(file = "img/stationsPrcpBCD.pdf", width = 10, height = 10)
+#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/stationsPrcpBCD.pdf", width = 10, height = 10)
 gridExtra::grid.arrange(l.pB, l.pC, l.pD,
 	nrow = 3)
 #dev.off()
@@ -924,6 +920,22 @@ colnames(stat_contUS)[18]	<- "dstar"
 
 
 
+
+###
+###	Numbers in text at beginning of Sec. 4.1
+###
+
+
+table(stat_contUS$quspurious5)/nrow(stat_contUS)
+table(stat_contUS$meanbreak)/nrow(stat_contUS)
+table(stat_contUS$potentially_contaminated)/nrow(stat_contUS)
+table(stat_contUS$armanoise)/nrow(stat_contUS)
+
+
+
+
+
+
 ###
 ###	Tab.2 & Tab.B.9 Diagnosed sources of spurious long memory, mean breaks, and short-run dynamics
 ###
@@ -1088,7 +1100,7 @@ h.pDstar	<- ggplot(data = stat_contUS, aes(x = dstar)) +
 	xlab(expression(italic(hat(d))~"*")) + ylab("") +
 	theme(panel.background=element_blank())
 
-#pdf(file = "img/histsLRD.pdf", width=8, height=3)
+#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/histsLRD.pdf", width=8, height=3)
 gridExtra::grid.arrange(h.pLW, h.pDstar, 
 	nrow = 1)
 #dev.off()
@@ -1116,7 +1128,7 @@ h.pDstar_world	<- ggplot(data = dat, aes(x = dstar)) +
 	xlab(expression(italic(hat(d))~"*")) + ylab("") +
 	theme(panel.background=element_blank())
 
-#pdf(file = "img/histsLRDworld.pdf", width=8, height=3)
+#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/histsLRDworld.pdf", width=8, height=3)
 gridExtra::grid.arrange(h.pLW_world, h.pDstar_world, 
 	nrow = 1)
 #dev.off()
@@ -1146,7 +1158,7 @@ d.p	<- ggplot() +
 #	geom_point(data = stat_contUS, aes(x = LW, y = dstar), col = cols.tmp[6], cex = 1.2) +
 	xlab(expression(italic(hat(d)[LW]))) + ylab(expression(italic(hat(d))~"*")) +
 	theme(panel.background=element_blank(), axis.title.y = element_text(angle = 0))
-#pdf(file = "img/scPlotDandDstar.pdf", width=8, height=4)
+#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/scPlotDandDstar.pdf", width=8, height=4)
 d.p
 #dev.off()
 
@@ -1159,7 +1171,7 @@ d.p	<- ggplot() +
 #	geom_point(data = dat, aes(x = LW, y = dstar), col = cols.tmp[6], cex = 1.2) +
 	xlab(expression(italic(hat(d)[LW]))) + ylab(expression(italic(hat(d))~"*")) +
 	theme(panel.background=element_blank(), axis.title.y = element_text(angle = 0))
-#pdf(file = "img/scPlotDandDstarWorld.pdf", width=8, height=4)
+#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/scPlotDandDstarWorld.pdf", width=8, height=4)
 d.p
 #dev.off()
 
@@ -1193,10 +1205,7 @@ m.pD	<- ggplot() +
 	theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(),
         axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank(),
 	  panel.background=element_blank())
-#pdf(file = "img/meanPrcpAnoKoppenUSstatesWoKoppen.pdf", width=12, height=8)
 m.pD
-#dev.off()
-
 
 
 #map on adjusted LW estimates
@@ -1212,12 +1221,10 @@ m.p2	<- ggplot() +
 	theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(),
         axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank(),
 	  panel.background=element_blank())
-#pdf(file = "img/mapsLWestimates.pdf", width=8, height=8)
-gridExtra::grid.arrange(m.pD, m.p2, nrow = 2)
-#dev.off()
 
 
-#pdf(file = "img/mapsDandDstar.pdf", width=8, height=6)
+#Fig.8
+#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/mapsDandDstar.pdf", width=8, height=6)
 gridExtra::grid.arrange(m.pD, m.p2, nrow = 2)
 #dev.off()
 
@@ -1302,7 +1309,7 @@ seasPlot	<- ggplot(data = dat.tmp1) +
 		panel.background = element_blank())
 
 #Fig.A.9
-#pdf(file = "img/seasonPlot.pdf", width=8, height=4)
+#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/seasonPlot.pdf", width=8, height=4)
 seasPlot
 #dev.off()
 
@@ -1337,34 +1344,6 @@ table(rainresults$koppen)
 table(rainresults[rainresults$statID %in% stat_usContmT$statID, "koppen"])
 
 
-nrow(stat_contUS)
-mean(stat_contUS$lon)
-mean(stat_contUS$lat)
-
-table(stat_contUS$zone_c)
-table(stat_contUS$zone_p)
-table(stat_contUS$zone_t)
-
-table(stat_contUS$quspurious5)/nrow(stat_contUS)
-table(stat_contUS$meanbreak)/nrow(stat_contUS)
-table(stat_contUS$potentially_contaminated)/nrow(stat_contUS)
-table(stat_contUS$armanoise)/nrow(stat_contUS)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -1391,11 +1370,22 @@ table(stat_contUS$armanoise)/nrow(stat_contUS)
 dataPrepr.fct()
 
 
-#worldwide
+mp <- NULL
+mapWorld <- ggplot2::borders("world", colour = cols.tmp[5], fill=NA) # create a layer of borders
 
-nrow(stat2.2[stat2.2$is.in.data & (stat2.2$statID %in% RTS.Adj.Ti_Tend[, "statID"][RTS.Adj.Ti_Tend[ , "misObs"] == 0]), ])
-stat.tmp	<- stat2.2[stat2.2$is.in.data & (stat2.2$statID %in% RTS.Adj.Ti_Tend[, "statID"][RTS.Adj.Ti_Tend[ , "misObs"] == 0]), ]
-stat.tmp2	<- stat.tmp[!is.na(stat.tmp$koppen2), ]
+data(koppen)
+koppen[, 3]			<- factor(koppen[, 3])
+koppen			<- data.frame(Lon = koppen[,2], Lat = koppen[,1], Cls = koppen[,3])
+names(koppen)
+coordinates(koppen)	<- ~ Lon + Lat
+proj4string(koppen)	<-  CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
+gridded(koppen)		<- TRUE
+raster2			<- raster::raster(koppen)
+
+
+#worldmap with koppen climate zones
+raster2DF			<- as.data.frame(raster2, xy = TRUE)
+names(raster2DF)[3]	<- "KoppenCliZs"
 
 gmapK		<- ggplot() + 
 	mapWorld +
@@ -1406,187 +1396,19 @@ gmapK		<- ggplot() +
 				"Dfa", "Dfb", "Dfc", "Dfd", "Dsa", "Dsb", "Dsc", "Dsd", "Dwa", "Dwb", "Dwc", "Dwd",
 				"EF", "ET"), alpha = 0.5) +
 	geom_point(data = rainresults, aes(x = lon, y = lat), color = cols.tmp[2], cex = 0.4, pch = 20) +
-#	geom_point(data = stat.tmp2, aes(x = lon, y = lat), color = cols.tmp[2], cex = 0.4, pch = 20) +
 	labs(y = "", x = "") +
-#	guides(color = guide_legend(title = "Koppen Climate Zones")) +
-	theme(axis.text.x = element_blank(), axis.text.y = element_blank(),
-		axis.ticks.x = element_blank(), axis.ticks.y = element_blank(),
-		panel.background = element_blank())
-#pdf(file = "img/koppenClimZs.pdf", width=12, height=8)
-gmapK
-#dev.off()
-
-
-
-#US
-
-m.p	<- plot_usmap(regions = "states") + 
-#	geom_point(data = stat_usAllmT, aes(y = y, x = x),				# all available ts
-#		col = "grey", cex = 0.3, pch = 20) +
-	geom_point(data = stat_usContmT, aes(y = y, x = x),					# ts used in analysis
-		 color = cols.tmp[8], cex = 0.4, pch = 20) +
-#		 color = "purple", cex = 0.4, pch = 20) +
-	geom_point(data = stat_usContmT[poi.index,], aes(y = y, x = x),			# plot exemplary station
-		 color = "darkgrey", cex = 4, pch = 1) +
-	theme(panel.background=element_blank())
-#pdf(file = "img/stationsUSall.pdf", width = 12, height = 8)
-plot(m.p)
-#dev.off()
-
-
-
-us 		<- map_data("usa")
-usStates	<- map_data("state")
-
-stations		<- st_as_sf(stat_usContmT, coords = c("lon", "lat"), remove = FALSE, crs = "EPSG:4326")
-stations$group	<- 1
-
-m.p	<- ggplot(data = us, aes(x = long, y = lat, group = group)) + 
-	geom_polygon(fill = cols.tmp[4], alpha = 0.5) + 
-	geom_polygon(data = usStates, color = "white", fill = NA) + 
-	geom_point(data = stations, aes(y = lat, x = lon, shape = koppen2.cz),			# ts used in analysis
-		 color = cols.tmp[8], cex = 0.9) +
-	theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(),
-        axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank()) + 
-	coord_fixed(1.3) +
-	labs(shape = "Climate zone") +
-	theme(panel.background=element_blank())
-#pdf(file = "img/stationsContUS.pdf", width = 12, height = 8)
-plot(m.p)
-#dev.off()
-
-
-table(stat_usContmT$koppen2.cz)
-table(stat_usContmT$koppen2.ps)
-table(stat_usContmT$koppen2.ts)
-
-
-xtable(t(table(stat_usContmT$koppen2)))
-
-
-
-
-
-#full worldmap with koppen climate zones
-raster2DF			<- as.data.frame(raster2, xy = TRUE)
-names(raster2DF)[3]	<- "KoppenCliZs"
-
-ggplot(data = raster2DF) + 
-	mapWorld +
-	geom_raster(aes(x = x, y = y, fill = KoppenCliZs)) +
-	scale_fill_viridis_d(alpha = 0.5) +
+#	scale_fill_viridis_d(alpha = 0.5) +
 #	coord_equal() +
 #	coord_fixed(1.5) +
 	theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(),
         axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank(),
 	  panel.background=element_blank())
-
-#full world map with climate zones only colored for US
-ras			<- as(raster2, "SpatRaster")
-boundsUS		<- st_as_sf(us[, c(1:2)], coords = c("long", "lat"))
-rasterUS		<- crop(ras, extent(boundsUS))
-#rasterUS		<- mask(rasterUS, boundsUS)
-rasterUSDF		<- as.data.frame(rasterUS, xy = TRUE)
-colnames(rasterUSDF)[3]		<- "KoppenCliZs"
-
-rasterUSDF_sf	<- st_as_sf(rasterUSDF, coords = c("x", "y"), crs = "EPSG:4326")
-rasterUSDF_sf	<- st_transform(x = rasterUSDF_sf, crs = "EPSG:3857", desired_accuracy = 1, allow_ballpark = FALSE)
-
-bndryUS		<- sf::st_as_sf(maps::map("usa", plot = FALSE, fill = FALSE))
-bndryUS		<- st_transform(x = bndryUS, crs = "EPSG:3857", desired_accuracy = 1, allow_ballpark = FALSE)
-bndryUSc		<- bndryUS[1,]
-bndryUS		<- st_transform(x = bndryUS, crs = "EPSG:4326", desired_accuracy = 1, allow_ballpark = FALSE)
-
-rasterUSDF_sf	<- st_intersection(st_make_valid(rasterUSDF_sf), st_make_valid(bndryUSc), sparse = FALSE)
-rasterUSDF_sf	<- st_transform(rasterUSDF_sf, crs = "EPSG:4326", desired_accuracy = 1)
-rasterUSDF		<- cbind(as.data.frame(rasterUSDF_sf, xy = TRUE),
-				x = st_coordinates(rasterUSDF_sf)[,1], y = st_coordinates(rasterUSDF_sf)[,2])
-
-statesUS		<- sf::st_as_sf(maps::map("state", plot = FALSE, fill = TRUE))
-
-
-#worldmap where only US is colored
-#ggplot() + 
-#	mapWorld +
-#	geom_raster(data = rasterUSDF, aes(x = x, y = y, fill = KoppenCliZs)) +
-#	scale_fill_viridis_d(alpha = 0.5) +
-##	coord_equal() +
-##	coord_fixed(1.5) +
-#	theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(),
-#        axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank(),
-#	  panel.background=element_blank())
-
-
-#map of Contiguous US with climate zones and monitoring stations
-#mapUS		<- borders(database = "usa", colour = cols.tmp[5], fill = NA) # create a layer of borders
-mapUSstates	<- borders(database = "state", colour = cols.tmp[5], fill = NA) # create a layer of borders
-
-m.p	<- ggplot() + 
-	geom_raster(data = rasterUSDF, aes(x = x, y = y, fill = KoppenCliZs)) +
-	scale_fill_viridis_d(name = "Climate Zone",
-			limits = c("Af", "Am", "As", "Aw", "BSh", "BSk", "BWh", "BWk",
-				"Cfa", "Cfb", "Cfc", "Csa", "Csb", "Csc", "Cwa", "Cwb", "Cwc",
-				"Dfa", "Dfb", "Dfc", "Dfd", "Dsa", "Dsb", "Dsc", "Dsd", "Dwa", "Dwb", "Dwc", "Dwd",
-				"EF", "ET"), alpha = 0.5) +
-	mapUSstates +
-	geom_point(data = stations, aes(y = lat, x = lon),					# ts used in analysis
-		 color = cols.tmp[2], cex = 0.8, pch = 20) +
-	coord_equal() +
-#	coord_fixed(1.5) +
-	theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(),
-        axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank(),
-	  panel.background=element_blank())
-#pdf(file = "img/koppenClimZsUSstates.pdf", width=12, height=8)
-m.p
+	theme(axis.text.x = element_blank(), axis.text.y = element_blank(),
+		axis.ticks.x = element_blank(), axis.ticks.y = element_blank(),
+		panel.background = element_blank())
+#pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/koppenClimZs.pdf", width=12, height=8)
+gmapK
 #dev.off()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
