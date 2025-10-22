@@ -1,3 +1,4 @@
+
 #############################################################################
 ### R-Basics and data
 #############################################################################
@@ -11,6 +12,8 @@
 
 #	install.packages("devtools")
 	library(devtools)
+#	install.packages("forecast")
+	library(forecast)
 #	install.packages("dplyr")
 	library(dplyr)
 #	install.packages("snowfall")
@@ -19,7 +22,23 @@
 	library(arfima)
 #	install.packages("longmemo")
 	library(longmemo)
-#	install.packages("memochange")
+#	install.packages("partitions")
+	library(partitions)
+#	install.packages("strucchange")
+	library(strucchange)
+#	install.packages("fracdiff")
+	library(fracdiff)
+#	install.packages("mvtnorm")
+	library(mvtnorm)
+#	install.packages("RcppArmadillo")
+	library(RcppArmadillo)
+	download.file(url = "https://cran.r-project.org/src/contrib/Archive/LongMemoryTS/LongMemoryTS_0.1.0.tar.gz",
+		destfile = "LongMemoryTS_0.1.0.tar.gz")
+	install.packages(pkgs = "LongMemoryTS_0.1.0.tar.gz", type = "source", repos = NULL)
+	library(LongMemoryTS)
+	download.file(url = "https://cran.r-project.org/src/contrib/Archive/memochange/memochange_1.1.2.tar.gz",
+		destfile = "memochange_1.1.2.tar.gz")
+	install.packages(pkgs = "memochange_1.1.2.tar.gz", type = "source", repos = NULL)
 	library(memochange)
 	install_github("markusfritsch/prcpFC")
 	library(prcpFC)
@@ -306,8 +325,10 @@ rainresults <- tibble(ghcndStations[ghcndStations$statID %in% colnames(raintib)[
                          quspurious5, quspurious10, meanbreak, armanoise, potentially_contaminated,
                          LW, LWmixed, houLW, houLWmixed, bestd, ddiff))
 
+rainresults <- rainresults[(rainresults$zone_c == "B" |
+				rainresults$zone_c == "C" |
+				rainresults$zone_c == "D"), ]
 #save(rainresults, file = "rainresults.RData"))
-
 
 
 

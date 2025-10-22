@@ -1,3 +1,4 @@
+
 ###########################################################################################
 ### R-Basics and data
 ###########################################################################################
@@ -17,18 +18,10 @@
 	library(sp)
 #	install.packages("raster")
 	library(raster)
-#	install.packages("rasterVis") #bietet einfachere Visualisierung von Raster
-#	library(rasterVis)
-#	install.packages("rgdal")
-#	library(rgdal)
 #	install.packages("rworldmap")
 	library(rworldmap)
 #	install.packages("usmap")
 	library(usmap)
-#	install.packages("maps")
-#	library(maps)
-#	install.packages("mapdata")
-#	library(mapdata)
 #	install.packages("ggplot2")
 	library(ggplot2)
 #	install.packages("RColorBrewer")
@@ -42,15 +35,18 @@
 #	install.package("dplyr")
 	library(dplyr)
 #	install.packages("forecast")
-  library(forecast)
+  	library(forecast)
 #	install.packages("arfima")
-  library(arfima)
+  	library(arfima)
 #	install.packages("devtools")
 	library(devtools)
 #	install.packages("xtable")
 	library(xtable)
 	install_github("markusfritsch/prcpFC")
 	library(prcpFC)
+
+
+
 
 
 
@@ -62,11 +58,25 @@ rm(list=ls())
 
 
 
+###
+###	Data preprocessing function to create all required objects
+###
+
+
+dataPrepr.fct	<- function(
+				x = data(raindata6019),
+				y = data(ghcndStations)
+				){
+
+
+###	Clear workspace
+
+rm(list=ls())
+
 
 ###	Specify colors
 
-
-cols.tmp		<- c(
+cols.tmp		<<- c(
 #				"#f58080"	# lightred
 				"#efa540"	# orange
 				,"#2266ee"	# blue
@@ -81,46 +91,32 @@ cols.tmp		<- c(
 				)
 
 
-
-
-
-
-###
-### Load station meta data with koppen climate zone classification and precipitation time series
-###
-
-
-data(raindata6019)
-data(ghcndStations)
-
-
-stat2.2 		<- cbind(ghcndStations, ghcndStations$statID %in% colnames(raindata6019))
-names(stat2.2)[12]	<- "is.in.data"
+  stat2.2 			<<- cbind(ghcndStations, ghcndStations$statID %in% colnames(raindata6019))
+  names(stat2.2)[12]	<<- "is.in.data"
 
 
 ###	Compile anomaly data based on imputed time series
 
-dat.tmp			<- raindata6019[,-1]
-mean(colMeans(dat.tmp))
-median(colMeans(dat.tmp))
+  dat.tmp		<<- raindata6019[,-1]
+  mean(colMeans(dat.tmp))
+  median(colMeans(dat.tmp))
 
-monthly_refMeans	<- function(x){
-  refMeans	 <- rowMeans(matrix(x[1:360], nrow = 12))							# 1960-01 to 1989-12
-  return(refMeans)
-}
+  monthly_refMeans	<<- function(x){
+    refMeans	 <- rowMeans(matrix(x[1:360], nrow = 12))							# 1960-01 to 1989-12
+    return(refMeans)
+  }
 
-monthly_refMedians	<- function(x){
-  mat.tmp		<- matrix
-  refMedians	<- apply(X = matrix(x[1:360], nrow=12), FUN = median, MARGIN = 1)		# 1960-01 to 1989-12
-  return(refMedians)
-}
+  monthly_refMedians	<<- function(x){
+    mat.tmp		<- matrix
+    refMedians	<- apply(X = matrix(x[1:360], nrow=12), FUN = median, MARGIN = 1)		# 1960-01 to 1989-12
+    return(refMedians)
+  }
 
-refMeans	<- sapply(dat.tmp, function(x) monthly_refMeans(unname(unlist(x))))
-refMeds		<- sapply(dat.tmp, function(x) monthly_refMedians(unname(unlist(x))))
+  refMeans		<<- sapply(dat.tmp, function(x) monthly_refMeans(unname(unlist(x))))
+  refMeds		<<- sapply(dat.tmp, function(x) monthly_refMedians(unname(unlist(x))))
 
-dat_demeaned	<- dat.tmp - apply(refMeans, FUN = rep, MARGIN = 2, times = 60)
-dat_demeded	<- dat.tmp - apply(refMeds, FUN = rep, MARGIN = 2, times = 60)
-
+  dat_demeaned	<<- dat.tmp - apply(refMeans, FUN = rep, MARGIN = 2, times = 60)
+  dat_demeded	<<- dat.tmp - apply(refMeds, FUN = rep, MARGIN = 2, times = 60)
 
 
 
@@ -129,27 +125,27 @@ dat_demeded	<- dat.tmp - apply(refMeds, FUN = rep, MARGIN = 2, times = 60)
 ###
 
 
-statAll	<- stat2.2$statID[stat2.2$is.in.data]
-statAll.id	<- substr(stat2.2$statID[stat2.2$is.in.data], start = 1, stop = 2)
+  statAll		<<- stat2.2$statID[stat2.2$is.in.data]
+  statAll.id	<<- substr(stat2.2$statID[stat2.2$is.in.data], start = 1, stop = 2)
 #all stations that contain no more missing vales after imputation
 
 #Australia
-statAus	<- "AS"
-statAus.id	<- grep(pattern = statAus, x = statAll.id)
-length(statAus.id)
-statID.Aus	<- stat2.2$statID[stat2.2$statID %in% statAll[statAus.id]]
+  statAus		<<- "AS"
+  statAus.id	<<- grep(pattern = statAus, x = statAll.id)
+#  length(statAus.id)
+  statID.Aus	<<- stat2.2$statID[stat2.2$statID %in% statAll[statAus.id]]
 
 #Europe
-statEU	<- c("AL", "BO", "BE", "BK", "BU", "DA", "GM", "EN",
-"FI", "FR", "GG", "GR", "HR", "EI", "IC", "IT", "LG", "LH", "LU",
-"MT", "MD", "MJ", "NL", "MK", "NO", "AU", "PL", "PO", "RO", "SW",
-"SZ", "RI", "SI", "LO", "SP", "EZ", "UP", "HU", "UK")
-statEU.id	<- grep(pattern = paste(statEU, collapse = "|"), x = statAll.id)
-length(statEU.id)
-statID.EU	<- stat2.2$statID[stat2.2$statID %in% statAll[statEU.id]]
+  statEU	<<- c("AL", "BO", "BE", "BK", "BU", "DA", "GM", "EN",
+		"FI", "FR", "GG", "GR", "HR", "EI", "IC", "IT", "LG", "LH", "LU",
+		"MT", "MD", "MJ", "NL", "MK", "NO", "AU", "PL", "PO", "RO", "SW",
+		"SZ", "RI", "SI", "LO", "SP", "EZ", "UP", "HU", "UK")
+  statEU.id	<<- grep(pattern = paste(statEU, collapse = "|"), x = statAll.id)
+#  length(statEU.id)
+  statID.EU	<<- stat2.2$statID[stat2.2$statID %in% statAll[statEU.id]]
 
 #United States
-usStatesCont	<- c(
+  usStatesCont	<<- c(
 				"AL",
 #				"AK",		# Alaska
 				"AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
@@ -159,9 +155,9 @@ usStatesCont	<- c(
 				"NV", "NH", "NJ", "NM", "NY", "NC", "ND", "OH",
 				"OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX",
 				"UT", "VT", "VA", "WA", "WV", "WI", "WY"
-)
+  )
 
-usStatesAll	<- c(
+  usStatesAll	<<- c(
 				"AL",
 				"AK",		# Alaska
 				"AZ", "AR", "CA", "CO", "CT", "DC", "DE", "FL", "GA",
@@ -172,62 +168,78 @@ usStatesAll	<- c(
 				"OK", "OR", "PA", "RI", "SC", "SD", "TN", "TX",
 				"UT", "VT", "VA", "WA", "WV", "WI", "WY",
 				"AS", "GU", "MP", "PR", "VI"
-)
+  )
 
-statID.usCont		<- stat2.2$statID[(stat2.2$stateUS %in% usStatesCont) & !(is.na(stat2.2$stateUS)) & stat2.2$is.in.data]
-statID.usContN		<- stat2.2$statID[!(stat2.2$stateUS %in% usStatesCont) & !(is.na(stat2.2$stateUS)) & stat2.2$is.in.data]
-statID.usAll		<- stat2.2$statID[(stat2.2$stateUS %in% usStatesAll) & !(is.na(stat2.2$stateUS)) & stat2.2$is.in.data]
-statID.usAllN		<- stat2.2$statID[!(stat2.2$stateUS %in% usStatesAll) & !(is.na(stat2.2$stateUS)) & stat2.2$is.in.data]
+  statID.usCont	<<- stat2.2$statID[(stat2.2$stateUS %in% usStatesCont) & !(is.na(stat2.2$stateUS)) & stat2.2$is.in.data]
+  statID.usContN	<<- stat2.2$statID[!(stat2.2$stateUS %in% usStatesCont) & !(is.na(stat2.2$stateUS)) & stat2.2$is.in.data]
+  statID.usAll	<<- stat2.2$statID[(stat2.2$stateUS %in% usStatesAll) & !(is.na(stat2.2$stateUS)) & stat2.2$is.in.data]
+  statID.usAllN	<<- stat2.2$statID[!(stat2.2$stateUS %in% usStatesAll) & !(is.na(stat2.2$stateUS)) & stat2.2$is.in.data]
 
-statID.USall	<- statID.usAll[statID.usAll %in% statAll]
-statID.UScont	<- statID.usCont[statID.usCont %in% statAll]
-length(statID.USall)
-length(statID.UScont)
+  statID.USall	<<- statID.usAll[statID.usAll %in% statAll]
+  statID.UScont	<<- statID.usCont[statID.usCont %in% statAll]
+#  length(statID.USall)
+#  length(statID.UScont)
 
 
-stat_Aus		<- stat2.2[stat2.2$statID %in% statID.Aus, ]
-nrow(stat_Aus)
-sum(is.na(stat_Aus$koppen2))
-statID.AusWOna	<- stat_Aus[!is.na(stat_Aus$koppen2), "statID"]
-length(statID.AusWOna)
-length(statID.Aus)
+  stat_Aus		<<- stat2.2[stat2.2$statID %in% statID.Aus, ]
+#  nrow(stat_Aus)
+#  sum(is.na(stat_Aus$koppen2))
+  statID.AusWOna	<<- stat_Aus[!is.na(stat_Aus$koppen2), "statID"]
+#  length(statID.AusWOna)
+#  length(statID.Aus)
 
-stat_EU		<- stat2.2[stat2.2$statID %in% statID.EU, ]
-nrow(stat_EU)
-sum(is.na(stat_EU$koppen2))
-statID.EUWOna	<- stat_EU[!is.na(stat_EU$koppen2), "statID"]
-length(statID.EUWOna)
-length(statID.EU)
+  stat_EU		<<- stat2.2[stat2.2$statID %in% statID.EU, ]
+#  nrow(stat_EU)
+#  sum(is.na(stat_EU$koppen2))
+  statID.EUWOna	<<- stat_EU[!is.na(stat_EU$koppen2), "statID"]
+#  length(statID.EUWOna)
+#  length(statID.EU)
 
-stat_usAll		<- stat2.2[stat2.2$statID %in% statID.USall, ]
-nrow(stat_usAll)
-sum(is.na(stat_usAll$koppen2))
-statID.USallWOna	<- stat_usAll[!is.na(stat_usAll$koppen2), "statID"]
-length(statID.USallWOna)
-length(statID.USall)
+  stat_usAll		<<- stat2.2[stat2.2$statID %in% statID.USall, ]
+#  nrow(stat_usAll)
+#  sum(is.na(stat_usAll$koppen2))
+  statID.USallWOna	<<- stat_usAll[!is.na(stat_usAll$koppen2), "statID"]
+#  length(statID.USallWOna)
+#  length(statID.USall)
 
-stat_usCont		<- stat2.2[stat2.2$statID %in% statID.UScont, ]
-nrow(stat_usCont)
-sum(is.na(stat_usCont$koppen2))
-statID.UScontWOna	<- stat_usCont[!is.na(stat_usCont$koppen2), "statID"]
-length(statID.UScontWOna)
-length(statID.UScont)
+  stat_usCont		<- stat2.2[stat2.2$statID %in% statID.UScont, ]
+#  nrow(stat_usCont)
+#  sum(is.na(stat_usCont$koppen2))
+  statID.UScontWOna	<<- stat_usCont[!is.na(stat_usCont$koppen2), "statID"]
+#  length(statID.UScontWOna)
+#  length(statID.UScont)
 
 #save("statID.Aus", "statID.EU", "statID.USall", "statID.UScont",
 #	file = "D:/Work/20_Projekte/280_Rainfall/R/10_data/2025-01-16_dataUpdate/statIDregions.RData")
 #save("statID.AusWOna", "statID.EUWOna", "statID.USallWOna", "statID.UScontWOna",
 #	file = "D:/Work/20_Projekte/280_Rainfall/R/10_data/2025-01-16_dataUpdate/statIDregionsWOnas.RData")
 
-stat_usAll		<- stat_usAll[!is.na(stat_usAll$koppen2), ]
-stat_usCont		<- stat_usCont[!is.na(stat_usCont$koppen2), ]
+  stat_usAll	<<- stat_usAll[!is.na(stat_usAll$koppen2), ]
+  stat_usCont	<<- stat_usCont[!is.na(stat_usCont$koppen2), ]
 
-stat_usContmT	<- usmap::usmap_transform(stat_usCont)
-stat_usAllmT	<- usmap::usmap_transform(stat_usAll)
+  stat_usContmT	<<- usmap::usmap_transform(stat_usCont)
+  stat_usAllmT	<<- usmap::usmap_transform(stat_usAll)
+
+  stat_usContmT	<<- stat_usContmT[!is.na(stat_usContmT$koppen2.cz) &
+					(stat_usContmT$koppen2.cz == "B" |
+					stat_usContmT$koppen2.cz == "C" |
+					stat_usContmT$koppen2.cz == "D") ,]
+
+  stat_Aus		<<- stat_Aus[!is.na(stat_Aus$koppen2.cz) &
+					(stat_Aus$koppen2.cz == "B" |
+					stat_Aus$koppen2.cz == "C" |
+					stat_Aus$koppen2.cz == "D") ,]
+
+  stat_EU		<<- stat_EU[!is.na(stat_EU$koppen2.cz) &
+					(stat_EU$koppen2.cz == "B" |
+					stat_EU$koppen2.cz == "C" |
+					stat_EU$koppen2.cz == "D") ,]
+
+
+}
 
 
 
-mp <- NULL
-mapWorld <- ggplot2::borders("world", colour = cols.tmp[5], fill=NA) # create a layer of borders
 
 
 
@@ -236,6 +248,13 @@ mapWorld <- ggplot2::borders("world", colour = cols.tmp[5], fill=NA) # create a 
 
 
 
+
+
+
+
+#required??
+#mp <- NULL
+#mapWorld <- ggplot2::annotation_borders("world", colour = cols.tmp[5], fill=NA) # create a layer of borders
 
 
 
@@ -249,18 +268,32 @@ mapWorld <- ggplot2::borders("world", colour = cols.tmp[5], fill=NA) # create a 
 ###
 
 
-stations		<- sf::st_as_sf(stat_usCont, coords = c("lon", "lat"), remove = FALSE, crs = "EPSG:4326")
-stations$group	<- 1
+#run 'dataPrepr.fct()' to clear workspace and create all required objects
+dataPrepr.fct()
+
+#load data
+data(rainresults)
+
+#use only data in main climate zones B, C, and D
+rainresults <- rainresults[!is.na(rainresults$zone_c) &
+					(rainresults$zone_c == "B" |
+					rainresults$zone_c == "C" |
+					rainresults$zone_c == "D") ,]
+
+stations		<- sf::st_as_sf(stat_usContmT, coords = c("lon", "lat"), remove = FALSE, crs = "EPSG:4267")
+#stations$group	<- 1
 
 us 		<- ggplot2::map_data("usa")
 usStates	<- ggplot2::map_data("state")
 
 data(koppen)
-koppen[, 3]		<- factor(koppen[, 3])
+koppen[, 3]			<- factor(koppen[, 3])
+koppen			<- data.frame(Lon = koppen[,2], Lat = koppen[,1], Cls = koppen[,3])
 names(koppen)
 coordinates(koppen)	<- ~ Lon + Lat
+proj4string(koppen)	<-  CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
 gridded(koppen)		<- TRUE
-raster2		<- raster::raster(koppen)
+raster2			<- raster::raster(koppen)
 
 
 ras			<- as(raster2, "SpatRaster")
@@ -274,11 +307,13 @@ rasterUSDF_sf	<- sf::st_as_sf(rasterUSDF, coords = c("x", "y"), crs = "EPSG:4326
 rasterUSDF_sf	<- sf::st_transform(x = rasterUSDF_sf, crs = "EPSG:3857", desired_accuracy = 1, allow_ballpark = FALSE)
 
 bndryUS		<- sf::st_as_sf(maps::map("usa", plot = FALSE, fill = FALSE))
+bndryUS		<- st_set_crs(x = bndryUS, value = "EPSG:4326")
 bndryUS		<- sf::st_transform(x = bndryUS, crs = "EPSG:3857", desired_accuracy = 1, allow_ballpark = FALSE)
 bndryUSc		<- bndryUS[1,]
 bndryUS		<- sf::st_transform(x = bndryUS, crs = "EPSG:4326", desired_accuracy = 1, allow_ballpark = FALSE)
 
 rasterUSDF_sf	<- sf::st_intersection(st_make_valid(rasterUSDF_sf), st_make_valid(bndryUSc), sparse = FALSE)
+rasterUSDF_sf	<- sf::st_intersection(rasterUSDF_sf, bndryUSc, sparse = FALSE)
 rasterUSDF_sf	<- sf::st_transform(rasterUSDF_sf, crs = "EPSG:4326", desired_accuracy = 1)
 rasterUSDF		<- cbind(as.data.frame(rasterUSDF_sf, xy = TRUE),
 				x = sf::st_coordinates(rasterUSDF_sf)[,1], y = sf::st_coordinates(rasterUSDF_sf)[,2])
@@ -295,7 +330,7 @@ m.p	<- ggplot() +
 				"Dfa", "Dfb", "Dfc", "Dfd", "Dsa", "Dsb", "Dsc", "Dsd", "Dwa", "Dwb", "Dwc", "Dwd",
 				"EF", "ET"), alpha = 0.5) +
 	mapUSstates +
-	geom_point(data = ghcndStations[ghcndStations$statID %in% stat_usContmT$statID, ], aes(y = lat, x = lon),					# ts used in analysis
+	geom_point(data = rainresults[rainresults$statID %in% stat_usContmT$statID, ], aes(y = lat, x = lon),					# ts used in analysis
 		 color = cols.tmp[2], cex = 0.8, pch = 20) +
 	coord_equal() +
 #	coord_fixed(1.5) +
@@ -330,7 +365,10 @@ quantile(apply(dat.tmp[361:720, ], FUN = median, MARGIN = 2),
 
 dat.tmp1			<- data.frame(unlist(apply(dat.tmp[361:720, ], FUN = median, MARGIN = 2)))
 stations1			<- cbind(stations, dat.tmp1)
-colnames(stations1)[14]	<- "medianPrcpAno"
+colnames(stations1)[11]	<- "medianPrcpAno"
+stations1			<- st_transform(stations1, crs = "EPSG:4326")
+stations1$lon		<- st_coordinates(stations1)[ , 1]
+stations1$lat		<- st_coordinates(stations1)[ , 2]
 median(dat.tmp[, "USC00253185"])
 mean(dat.tmp[, "USC00253185"])
 max(dat.tmp[, "USC00253185"])
@@ -352,6 +390,8 @@ m.p1	<- ggplot() +
 #				"Dfa", "Dfb", "Dfc", "Dfd", "Dsa", "Dsb", "Dsc", "Dsd", "Dwa", "Dwb", "Dwc", "Dwd",
 #				"EF", "ET"), alpha = 0.5) +
 	mapUSstates +
+#	stat_sf_coordinates(data = stations1, aes(y = lat, x = lon, color = medianPrcpAno),		# ts used in analysis
+#		 cex = 4.0, pch = 20)
 	geom_point(data = stations1, aes(y = lat, x = lon, color = medianPrcpAno),		# ts used in analysis
 		 cex = 4.0, pch = 20) +
 	coord_equal() +
@@ -370,31 +410,7 @@ m.p1
 
 
 
-m.p2	<- ggplot() + 
-	geom_raster(data = rasterUSDF, aes(x = x, y = y, fill = KoppenCliZs)) +
-	scale_fill_viridis_d(name = "Climate zone",
-			limits = c("Af", "Am", "As", "Aw", "BSh", "BSk", "BWh", "BWk",
-				"Cfa", "Cfb", "Cfc", "Csa", "Csb", "Csc", "Cwa", "Cwb", "Cwc",
-				"Dfa", "Dfb", "Dfc", "Dfd", "Dsa", "Dsb", "Dsc", "Dsd", "Dwa", "Dwb", "Dwc", "Dwd",
-				"EF", "ET"), alpha = 0.5) +
-	mapUSstates +
-	geom_point(data = stations1, aes(y = lat, x = lon, color = medianPrcpAno),		# ts used in analysis
-		 cex = 3.0, pch = 20) +
-	coord_equal() +
-	scale_color_gradient2(name = "Precipitation\nanomaly", limits = c(-200,200),
-					low = cols.tmp[7], mid = cols.tmp[9], high = cols.tmp[6]) +
-	guides(fill = guide_legend(order = 2), color = guide_colorbar(order = 1)) +
-#	scale_color_viridis(name = "Median precipitation anomaly", option = "viridis") +
-#	coord_fixed(1.5) +
-	theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks.x=element_blank(),
-		axis.title.y=element_blank(), axis.text.y=element_blank(), axis.ticks.y=element_blank(),
-		legend.title = element_text(size = 20), legend.text = element_text(size = 20), 
-		panel.background=element_blank())
-#pdf(file = "img/medianPrcpAnoKoppenUSstates.pdf", width=12, height=8)
-m.p2
-#dev.off()
-
-
+#Fig.1
 #pdf(file = "img/meanPrcpAnoKoppenUSstates.pdf", width=16, height=10)
 gridExtra::grid.arrange(m.p, m.p1, 
 	nrow = 2)
@@ -407,10 +423,15 @@ gridExtra::grid.arrange(m.p, m.p1,
 
 
 
+
+
 ###
 ###	Fig.2: Violin plot and cumulative empirical distribution function
 ###
 
+
+#run 'dataPrepr.fct()' to clear workspace and create all required objects
+dataPrepr.fct()
 
 dat	<- dat_demeded
 
@@ -428,6 +449,8 @@ col.set	<- c("#6b625d", "#2266ee", "#c4bdb7")
 ord.range	<- c(-1, 1)*1200
 
 
+
+#Fig.2
 #	pdf(file = "img/Density_CDens.pdf", height = 2, width = 8)
 
 par(mfrow = c(1, 2), mgp = c(2, 1, 0), mai = c(0.4, 0.4, 0.1, 0.2))
@@ -524,8 +547,6 @@ lines(x = rep(quantile(unlist(dat[1:360, ]), probs = 0.1), times = 2), y = c(0, 
 lines(x = rep(quantile(unlist(dat[361:720, ]), probs = 0.1), times = 2), y = c(0, 0.1), col = col.set[2], lwd = 1)
 
 
-
-
 #dev.off()
 
 
@@ -538,42 +559,6 @@ lines(x = rep(quantile(unlist(dat[361:720, ]), probs = 0.1), times = 2), y = c(0
 
 
 
-#statement on medians of precipitation anomalies for 1990 until 2019
-
-mat6089	<- matrix(nrow = 6, ncol = 12)
-mat9019	<- matrix(nrow = 6, ncol = 12)
-
-for(i in 1:12){
-  mat6089[1:5,i]	<- quantile(dat[dat$timeIndex < 361 & dat$month == i, "precAno"], probs = c(0.1,0.25, 0.5, 0.75, 0.9))
-  mat6089[6,i]	<- mean(dat[dat$timeIndex < 361 & dat$month == i, "precAno"])
-  mat9019[1:5,i]	<- quantile(dat[dat$timeIndex > 360 & dat$month == i, "precAno"], probs = c(0.1,0.25, 0.5, 0.75, 0.9))
-  mat9019[6,i]	<- mean(dat[dat$timeIndex > 360 & dat$month == i, "precAno"])
-}
-mat6089
-mat9019
-
-mat9019[3,] - mat6089[3,]
-#increases in medians for all months, but Sep and Nov
-
-mat9019[5,] - mat6089[5,]
-mat9019[4,] - mat6089[4,]
-#increases in 90- and 75%-quantiles for all months - except Mar, Sep, and Nov
-
-mat9019[2,] - mat6089[2,]
-mat9019[1,] - mat6089[1,]
-#3(4) decreases in 25(10)%-quantiles for all months - except Feb, Mar, May, Sep, and Nov
-
-mat6089[5,] - mat6089[1,]
-mat9019[5,] - mat9019[1,]
-#difference in range of 90 and 10%-quantile increases
-
-mat6089[4,] - mat6089[2,]
-mat9019[4,] - mat9019[2,]
-#difference in range of 75 and 25%-quantile increases
-
-mat6089[6,] - mat6089[3,]
-mat9019[6,] - mat9019[3,]
-#difference between mean and median increase for all months compared to reference period - except March, September, November
 
 
 
@@ -587,6 +572,10 @@ mat9019[6,] - mat9019[3,]
 ###
 ###	Fig.3: Plots for three main climate zones in Contiguous US from 1960 to 2019 (time series plots)
 ###
+
+
+#run 'dataPrepr.fct()' to clear workspace and create all required objects
+dataPrepr.fct()
 
 
 czs.tmp	<- c("B", "C", "D")
@@ -638,6 +627,7 @@ for(i in 1:length(czs.tmp)){
 }
 
 
+#Fig.3
 #pdf(file = "img/stationsPrcpBCD.pdf", width = 10, height = 10)
 gridExtra::grid.arrange(l.pB, l.pC, l.pD,
 	nrow = 3)
@@ -647,9 +637,7 @@ gridExtra::grid.arrange(l.pB, l.pC, l.pD,
 
 
 
-
-
-
+if(FALSE){
 dat.tmp0 			<- data.frame(unlist(dat.tmp))
 dat.tmp0			<- cbind(rep(colnames(dat.tmp), each = length(rownames(dat.tmp))), dat.tmp0)
 dat.tmp0			<- cbind(rep(1:length(rownames(dat.tmp)), times = length(colnames(dat.tmp))),
@@ -691,7 +679,7 @@ dat.tmp[dat.tmp> 30000]
 length(dat.tmp[dat.tmp> 30000])
 which(dat.tmp> 30000)
 which(apply(FUN = max, dat.tmp, MARGIN = 2) > 30000)
-
+}
 
 
 
@@ -702,6 +690,10 @@ which(apply(FUN = max, dat.tmp, MARGIN = 2) > 30000)
 ###
 ###	Fig.4: ACF and PACF plots for simulated ARFIMA(0,d,0) data
 ###
+
+
+#run 'dataPrepr.fct()' to clear workspace and create all required objects
+dataPrepr.fct()
 
 
 #simulate ARFIMA(0,d,0) data
@@ -792,6 +784,7 @@ lp6	<- ggplot(data = exPacf_df, mapping = aes(x = lag, y = ap)) +
         plot.margin = unit(c(1,1,1,1), "cm"))
 
 
+#Fig.4
 #pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/acfPacf.pdf", width=9, height=10)
 gridExtra::grid.arrange(lp3, lp6, lp2, lp5, lp1, lp4,
                         nrow = 3)
@@ -806,6 +799,10 @@ gridExtra::grid.arrange(lp3, lp6, lp2, lp5, lp1, lp4,
 ###
 ###	Fig.5: log periodogram vs. log frequency for simulated ARFIMA(0,d,0) data
 ###
+
+
+#run 'dataPrepr.fct()' to clear workspace and create all required objects
+dataPrepr.fct()
 
 
 #simulate ARFIMA(0,d,0) data
@@ -826,10 +823,10 @@ sim_sm	<- arfima::arfima.sim(n = n, model = list(dfrac = d_sm))
 sim_ap	<- arfima::arfima.sim(n = n, model = list(dfrac = d_ap))
 
 #plots of raw time series
-par(mfrow = c(3,1))
-plot(sim_lm, type = "l", ylim = c(-5,5))
-plot(sim_sm, type = "l", ylim = c(-5,5))
-plot(sim_ap, type = "l", ylim = c(-5,5))
+#par(mfrow = c(3,1))
+#plot(sim_lm, type = "l", ylim = c(-5,5))
+#plot(sim_sm, type = "l", ylim = c(-5,5))
+#plot(sim_ap, type = "l", ylim = c(-5,5))
 
 
 #Figure according to Beran et al. (2012), Chapter 1.2 (f): Log(periodogram) vs. log(lambda)
@@ -838,16 +835,16 @@ nj	<- floor(T/2)
 ir	<- complex(real = 0, imaginary = 1)
 freqs	<- 2*pi*(1:nj)/T
 peri_df	<- data.frame(freq_disc = log(1:nj), freq_cont = log(freqs), per_ap = log(as.vector(1/(2*pi*T)*abs(t(sim_ap)%*%exp(-ir*(1:T)%*%t(freqs)))^2)),
-                      per_sm = log(as.vector(1/(2*pi*T)*abs(t(sim_sm2)%*%exp(-ir*(1:T)%*%t(freqs)))^2)),
+                      per_sm = log(as.vector(1/(2*pi*T)*abs(t(sim_sm)%*%exp(-ir*(1:T)%*%t(freqs)))^2)),
                       per_lm = log(as.vector(1/(2*pi*T)*abs(t(sim_lm)%*%exp(-ir*(1:T)%*%t(freqs)))^2)))
 
 #for adding coefficient estimates
 lm4		<- lm(per_ap ~ freq_disc, data = peri_df)
-summary(lm4)
+#summary(lm4)
 lm5		<- lm(per_sm ~ freq_disc, data = peri_df)
-summary(lm5)
+#summary(lm5)
 lm6		<- lm(per_lm ~ freq_disc, data = peri_df)
-summary(lm6)
+#summary(lm6)
 
 fp4	<- ggplot(data = peri_df, mapping = aes(x = freq_disc, y = per_ap)) +
   geom_point(col = cols.tmp[2]) +
@@ -873,6 +870,7 @@ fp6	<- ggplot(data = peri_df, mapping = aes(x = freq_disc, y = per_lm)) +
   theme(panel.background = element_blank(), axis.title.y = element_text(angle = 0),
         plot.margin = unit(c(1,1,1,2.4), "cm"))
 
+#Fig.5
 #pdf(file = "D:/Work/20_Projekte/280_Rainfall/submission/IJoF/revision/img/logPeri.pdf", width=9, height=10)
 gridExtra::grid.arrange(fp4, fp5, fp6,
                         nrow = 3)
@@ -885,9 +883,13 @@ gridExtra::grid.arrange(fp4, fp5, fp6,
 
 
 
-###
-###	Sec. 5.1 and B.1: Analysis of long range dependence parameter estimates
-###
+################################################################################
+###	Sec. 4.1 and B.1: Analysis of long range dependence parameter estimates
+################################################################################
+
+
+#run 'dataPrepr.fct()' to clear workspace and create all required objects
+dataPrepr.fct()
 
 
 data(rainresults)
@@ -920,9 +922,14 @@ colnames(stat_contUS)[18]	<- "dstar"
 # column 'LW' contains LRD estimate not accounting for contaminations
 
 
-###	Diagnosed sources of spurious long memory, mean breaks, and short-run dynamics
 
-#Tab. 2: Contiguous US 
+
+###
+###	Tab.2 & Tab.B.9 Diagnosed sources of spurious long memory, mean breaks, and short-run dynamics
+###
+
+
+#Tab.2: Contiguous US 
 mat_contUS	<- rbind(c(sum(stat_contUS$quspurious5), sum(stat_contUS$meanbreak), sum(stat_contUS$potentially_contaminated),
 			sum(stat_contUS$armanoise)),
 		c(sum(!stat_contUS$quspurious5), sum(!stat_contUS$meanbreak), sum(!stat_contUS$potentially_contaminated),
@@ -931,10 +938,17 @@ mat_contUS	<- rbind(mat_contUS, round(mat_contUS[1,]/(mat_contUS[1,] + mat_contU
 colnames(mat_contUS)	<- c("quSprs", "meanBrk", "potCtmd", "armaNoise")
 mat_contUS
 
+#numbers in text on Tab.2 (contiguous US)
+nrow(stat_contUS)		#number of stations in contiguous US
+50/1077			#share of indications for spurious lm
+126/1077			#share of indications for mean break
+253/1077			#share of indications for pot. contaminations
+387/1077			#share of indications for ARMA noise
 
-#Tab B.7: World
+
+#Tab.B.9: World
 colnames(dat)[18]	<- "dstar"
-stat_world	<- dat[dat$statID %in% statID.AusWOna | dat$statID %in% statID.EUWOna | dat$statID %in% statID.USallWOna, ]
+stat_world	<- dat
 mat_world	<- rbind(c(sum(stat_world$quspurious5), sum(stat_world$meanbreak), sum(stat_world$potentially_contaminated),
 			sum(stat_world$armanoise)),
 		c(sum(!stat_world$quspurious5), sum(!stat_world$meanbreak), sum(!stat_world$potentially_contaminated),
@@ -943,44 +957,42 @@ mat_world	<- rbind(mat_world, round(mat_world[1,]/(mat_world[1,] + mat_world[2,]
 colnames(mat_world)	<- c("quSprs", "meanBrk", "potCtmd", "armaNoise")
 mat_world
 
+#numbers in text on B.9 (World)
+nrow(stat_world)		#number of worldwide stations
+149/2118			#share of indications for spurious lm
+223/2118			#share of indications for mean break
+536/2118			#share of indications for pot. contaminations
+777/2118			#share of indications for ARMA noise
+
 
 
 ###	Variation in memory parameter estimates
 
-#Contiguous US: Numbers in text
-quantile(stat_contUS$LW, probs = c(0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1))
+#Contiguous US: Numbers in text in Sec. 4.1
+#quantile(stat_contUS$LW, probs = c(0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1))
 sd(stat_contUS$LW)
-quantile(stat_contUS$houLW, probs = c(0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1))
-quantile(stat_contUS$dstar, probs = c(0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1))
+#quantile(stat_contUS$houLW, probs = c(0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1))
+#quantile(stat_contUS$dstar, probs = c(0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1))
 sd(stat_contUS$dstar)
 #increase in standard deviation of LRD parameter estimate
 (sd(stat_contUS$dstar) - sd(stat_contUS$LW))/sd(stat_contUS$LW)
-#standard deviation does not change much when excluding the very low value
-(sd(stat_contUS$dstar[-969]) - sd(stat_contUS$LW[-969]))/sd(stat_contUS$LW[-969])
 
-stat_contUS$LW[969]
-stat_contUS$dstar[969]
-#LRD parameter estimate changes substantially and indicates anti-persistence after the adjustment (before: LRD)
-
-stat_contUS$potentially_contaminated[stat_contUS$meanbreak]
-#why does this occur? This does not match our definition.
-
-quantile(stat_contUS$ddiff, probs = c(0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1))
-plot(sort(stat_contUS$ddiff))
-#susbtantial changes in LRD parameter estimates are the exception
-plot(density(stat_contUS$ddiff))
-mean(stat_contUS$ddiff)
+#quantile(stat_contUS$ddiff, probs = c(0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1))
+#plot(sort(stat_contUS$ddiff))
+##substantial changes in LRD parameter estimates are the exception
+#plot(density(stat_contUS$ddiff))
+#mean(stat_contUS$ddiff)
 #difference in memory parameter estimates is right-skewed, which means that
 # the memory parameter tends to decrease when accounting for potential
 # contaminations and short-range dependence (ddiff = LW-dstar)
 
 
 
-#World: Numbers in text
-quantile(dat$LW, probs = c(0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1))
+#World: Numbers in text in Sec. B.1
+#quantile(dat$LW, probs = c(0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1))
 sd(dat$LW)
-quantile(dat$houLW, probs = c(0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1))
-quantile(dat$dstar, probs = c(0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1))
+#quantile(dat$houLW, probs = c(0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1))
+#quantile(dat$dstar, probs = c(0, 0.01, 0.05, 0.1, 0.25, 0.5, 0.75, 0.9, 0.95, 0.99, 1))
 sd(dat$dstar)
 #increase in standard deviation of LRD parameter estimate
 (sd(dat$dstar) - sd(dat$LW))/sd(dat$LW)
@@ -989,7 +1001,73 @@ sd(dat$dstar)
 
 
 
-#Fig. 4: Contiguous US: histogram long range dependence parameter when accounting for potential contaminations
+
+###
+###	Tab.3 & Tab.B.10: Table number of anomaly series falling into three regions
+###
+
+
+#Tab.3: Contiguous US
+
+matLRD	<- cbind(c(
+		sum(stat_contUS$LW <= -0.1),
+		sum(stat_contUS$LW <= 0.1 & stat_contUS$LW >= -0.1),
+		sum(stat_contUS$LW >=0.1)),
+		c(sum(stat_contUS$dstar <= -0.1),
+		sum(stat_contUS$dstar <= 0.1 & stat_contUS$dstar >= -0.1),
+		sum(stat_contUS$dstar >=0.1))
+		)
+xtable(matLRD)
+
+
+
+#Tab.B.10: World
+
+matLRDworld	<- cbind(c(
+			sum(dat$LW <= -0.1),
+			sum(dat$LW <= 0.1 & dat$LW >= -0.1),
+			sum(dat$LW >=0.1)),
+			c(sum(dat$dstar <= -0.1),
+			sum(dat$dstar <= 0.1 & dat$dstar >= -0.1),
+			sum(dat$dstar >=0.1))
+			)
+xtable(matLRDworld)
+
+
+
+
+
+
+###
+###	Tab.4 & Tab.B.11: Five number summary and mean
+###
+
+
+#Tab.4: Contiguous US
+mat2_contUS	<- rbind(dLW = summary(stat_contUS$LW), dstar = summary(stat_contUS$dstar))
+xtable(mat2_contUS, digits = 2)
+
+
+#Tab. B.11: World
+mat2_world	<- rbind(dLW = summary(dat$LW), dstar = summary(dat$dstar))
+xtable(mat2_world, digits = 2)
+
+
+
+
+
+
+
+
+
+
+
+###
+###	Fig.6 & Fig.B.11: histogram long range dependence parameter when accounting for potential contaminations
+###
+
+
+#Fig. 6: Contiguous US
 h.pLW	<- ggplot(data = stat_contUS, aes(x = LW)) +
 	geom_vline(xintercept = 0, lty = 2, col = cols.tmp[6], alpha = 0.5) +
 #	geom_vline(xintercept = mean(stat_contUS$LW), lty = 2, col = cols.tmp[2], alpha = 0.5) +
@@ -1017,7 +1095,7 @@ gridExtra::grid.arrange(h.pLW, h.pDstar,
 
 
 
-#Fig. B.11: World: histogram long range dependence parameter when accounting for potential contaminations (world)
+#Fig. B.11: World
 h.pLW_world	<- ggplot(data = dat, aes(x = LW)) +
 	geom_vline(xintercept = 0, lty = 2, col = cols.tmp[6], alpha = 0.5) +
 #	geom_vline(xintercept = mean(dat$LW), lty = 2, col = cols.tmp[2], alpha = 0.5) +
@@ -1045,15 +1123,11 @@ gridExtra::grid.arrange(h.pLW_world, h.pDstar_world,
 
 
 
-# Contiguous US: Five number summary and mean
-mat2_contUS	<- rbind(dLW = summary(stat_contUS$LW), dstar = summary(stat_contUS$dstar))
-xtable(mat2_contUS, digits = 2)
 
 
 
-# World: Five number summary and mean
-mat2_world	<- rbind(dLW = summary(dat$LW), dstar = summary(dat$dstar))
-xtable(mat2_world, digits = 2)
+
+
 
 
 
@@ -1061,11 +1135,11 @@ xtable(mat2_world, digits = 2)
 
 
 ###
-###	 Scatterplots and tables of the two long range dependence parameter estimates
+###	 Fig.7 & Fig.B.12: Scatterplots and tables of the two long range dependence parameter estimates (LW vs. dstar)
 ###
 
 
-#Fig.5: Contiguous US: scatterplot LW vs. dstar
+#Fig.7: Contiguous US
 d.p	<- ggplot() +
 	geom_abline(intercept = 0, slope = 1, col = cols.tmp[4], lwd = 1) +
 	geom_point(data = stat_contUS, aes(x = LW, y = dstar), col = cols.tmp[8], cex = 1.2) +
@@ -1078,7 +1152,7 @@ d.p
 
 
 
-#Fig B.10: World: scatterplot LW vs. dstar
+#Fig B.12: World: scatterplot LW vs. dstar
 d.p	<- ggplot() +
 	geom_abline(intercept = 0, slope = 1, col = cols.tmp[4], lwd = 1) +
 	geom_point(data = dat, aes(x = LW, y = dstar), col = cols.tmp[8], cex = 1.2) +
@@ -1091,31 +1165,7 @@ d.p
 
 
 
-#Tab.3: Contiguous US: Table number of anomaly series falling into three regions
 
-matLRD	<- cbind(c(
-		sum(stat_contUS$LW <= -0.1),
-		sum(stat_contUS$LW <= 0.1 & stat_contUS$LW >= -0.1),
-		sum(stat_contUS$LW >=0.1)),
-		c(sum(stat_contUS$dstar <= -0.1),
-		sum(stat_contUS$dstar <= 0.1 & stat_contUS$dstar >= -0.1),
-		sum(stat_contUS$dstar >=0.1))
-		)
-xtable(matLRD)
-
-
-
-#Tab.B.8: World: Table number of anomaly series falling into three regions
-
-matLRDworld	<- cbind(c(
-			sum(dat$LW <= -0.1),
-			sum(dat$LW <= 0.1 & dat$LW >= -0.1),
-			sum(dat$LW >=0.1)),
-			c(sum(dat$dstar <= -0.1),
-			sum(dat$dstar <= 0.1 & dat$dstar >= -0.1),
-			sum(dat$dstar >=0.1))
-			)
-xtable(matLRDworld)
 
 
 
@@ -1124,7 +1174,7 @@ xtable(matLRDworld)
 
 
 ###
-###	Fig.6: Maps on long range dependence parameter estimates
+###	Fig.8: Maps on long range dependence parameter estimates
 ###
 
 
@@ -1189,6 +1239,10 @@ gridExtra::grid.arrange(m.pD, m.p2, nrow = 2)
 ###
 
 
+#run 'dataPrepr.fct()' to clear workspace and create all required objects
+dataPrepr.fct()
+
+
 stat_usContmT	<- stat_usContmT[stat_usContmT$koppen2.cz == "B" |
 					stat_usContmT$koppen2.cz == "C" |
 					stat_usContmT$koppen2.cz == "D" ,]
@@ -1196,7 +1250,26 @@ stat_usContmT	<- stat_usContmT[stat_usContmT$koppen2.cz == "B" |
 
 statIDs		<- stat_usContmT$statID
 
-dat.tmp		<- dat_demeded
+
+data(raindata6019)
+dat.tmp		<- raindata6019[ , -1]
+dat.tmp		<- dat.tmp[ , colnames(dat.tmp) %in% stat_usContmT$statID]
+
+
+monthly_refMedians	<- function(x){
+  mat.tmp		<- matrix
+  refMedians	<- apply(X = matrix(x[1:360], nrow=12), FUN = median, MARGIN = 1)		# 1960-01 to 1989-12
+  return(refMedians)
+}
+
+refMediansUS			<- sapply(dat.tmp, function(x) monthly_refMedians(unname(unlist(x))))
+monthRefMedians_allUSStat	<- apply(X = refMediansUS, FUN = median, MARGIN = 1)
+monthMedians_allUSStat		<- apply(X = dat.tmp, FUN = median, MARGIN = 1)
+
+#check:
+#apply(matrix(as.data.frame(dat.tmp[,1])[1:360,], nrow = 12), FUN = median, MARGIN = 1)	# ok
+#rowMeans(matrix(as.data.frame(dat.tmp[,1])[1:360,], nrow = 12))					#compare
+
 
 
 dat.tmp1		<- as.data.frame(cbind(index = 1:720, month_idx = rep((0:11)*60, times = 60) + rep(1:60, each = 12),
@@ -1228,6 +1301,7 @@ seasPlot	<- ggplot(data = dat.tmp1) +
 		axis.ticks.x = element_blank(), axis.ticks.y = element_blank(),
 		panel.background = element_blank())
 
+#Fig.A.9
 #pdf(file = "img/seasonPlot.pdf", width=8, height=4)
 seasPlot
 #dev.off()
@@ -1247,6 +1321,22 @@ seasPlot
 ###
 
 
+#run 'dataPrepr.fct()' to clear workspace and create all required objects
+dataPrepr.fct()
+
+
+#Appendix A.1
+nrow(stat_usContmT)	#number of monitoring stations in contiguous US
+
+#Appendix A.2
+nrow(rainresults)							#number of worldwide monitoring stations
+nrow(stat_usContmT) + nrow(stat_Aus) + nrow(stat_EU)	#number of monitoing stations in contiguous US, Australia, and Europe
+
+#Appendix Tab.A.8
+table(rainresults$koppen)
+table(rainresults[rainresults$statID %in% stat_usContmT$statID, "koppen"])
+
+
 nrow(stat_contUS)
 mean(stat_contUS$lon)
 mean(stat_contUS$lat)
@@ -1262,7 +1352,7 @@ table(stat_contUS$armanoise)/nrow(stat_contUS)
 
 
 
-# for world, see R script 'Rain_cat_np_2023-04-19.R'
+
 
 
 
@@ -1293,8 +1383,12 @@ table(stat_contUS$armanoise)/nrow(stat_contUS)
 
 
 ###
-###	Map of all stations with climate zone classification and table of climate zone classification for Continental US
+###	Fig.A.10: Map of all stations with climate zone classification and table of climate zone classification for Continental US
 ###
+
+
+#run 'dataPrepr.fct()' to clear workspace and create all required objects
+dataPrepr.fct()
 
 
 #worldwide
@@ -1311,15 +1405,16 @@ gmapK		<- ggplot() +
 				"Cfa", "Cfb", "Cfc", "Csa", "Csb", "Csc", "Cwa", "Cwb", "Cwc",
 				"Dfa", "Dfb", "Dfc", "Dfd", "Dsa", "Dsb", "Dsc", "Dsd", "Dwa", "Dwb", "Dwc", "Dwd",
 				"EF", "ET"), alpha = 0.5) +
-	geom_point(data = stat.tmp2, aes(x = lon, y = lat), color = cols.tmp[2], cex = 0.4, pch = 20) +
+	geom_point(data = rainresults, aes(x = lon, y = lat), color = cols.tmp[2], cex = 0.4, pch = 20) +
+#	geom_point(data = stat.tmp2, aes(x = lon, y = lat), color = cols.tmp[2], cex = 0.4, pch = 20) +
 	labs(y = "", x = "") +
 #	guides(color = guide_legend(title = "Koppen Climate Zones")) +
 	theme(axis.text.x = element_blank(), axis.text.y = element_blank(),
 		axis.ticks.x = element_blank(), axis.ticks.y = element_blank(),
 		panel.background = element_blank())
-pdf(file = "img/koppenClimZs.pdf", width=12, height=8)
+#pdf(file = "img/koppenClimZs.pdf", width=12, height=8)
 gmapK
-dev.off()
+#dev.off()
 
 
 
