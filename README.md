@@ -28,9 +28,9 @@ install_github("markusfritsch/prcpFC")
 
 
 
-## Computational details for reproducing the results
+## Computational details for reproducing the paper results
 
-There are three R scripts generating the results.
+There are three R scripts generating the results based on the datasets included in the package.
 - `10_longmemo_withPlots_2025-10-22.R`: estimates the memory parameters
 - `20_arfimaModeling_2025-10-22.R`: generates and evaluates all forecasts and produces tables of results
 - `30_exploratoryDataAnalysis_2025-10-22.R`: generates all further tables and figures
