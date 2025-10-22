@@ -49,7 +49,7 @@ longmemo (1.1-4),
 mvtnorm (1.3-3),
 partitions (1.10-9),
 raster (3.6-32),
-sf(1.0-21),
+sf (1.0-21),
 sp (2.2-0),
 strucchange (1.5-4),
 terra (1.8-70),
@@ -58,7 +58,7 @@ rworldmap (1.3-8),
 snowfall (1.84-6.3),
 usmap (1.0.0),
 viridis (0.6.5),
-xtable(1.8-4)
+xtable (1.8-4)
 
 
 
