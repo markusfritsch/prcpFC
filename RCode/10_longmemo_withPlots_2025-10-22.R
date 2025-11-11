@@ -325,6 +325,7 @@ rainresults <- tibble(ghcndStations[ghcndStations$statID %in% colnames(raintib)[
                          quspurious5, quspurious10, meanbreak, armanoise, potentially_contaminated,
                          LW, LWmixed, houLW, houLWmixed, bestd, ddiff))
 
+rainresults <- data.frame(rainresults)
 rainresults <- rainresults[(rainresults$zone_c == "B" |
 				rainresults$zone_c == "C" |
 				rainresults$zone_c == "D"), ]
