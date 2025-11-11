@@ -320,7 +320,8 @@ for(i in 1:ncol(dat_demeded)){
 dat_res	<- rainresults[rainresults$statID %in% colnames(raindata6024), ]
 
 for(i in 1:nrow(dat_res)){
-
+for(i in 327:nrow(dat_res)){
+  
   stat.tmp		<- dat_res$statID[i]
   ts.tmp		<- dat_demeded[, i]
   dLW.tmp		<- dat_res$LW[i]
@@ -344,7 +345,25 @@ for(i in 1:nrow(dat_res)){
   }
 
 }
-
+#---
+# Note
+#--  
+#There is an error message displayed for time series 326.
+#According to the documentation in the forecast package this
+#is due to the parameter estimates being refined by the 
+#the stats::arima function when argument
+#'estim = "mle"' is employed.
+#However, the error cannot be reproduced when running the
+#source code of the forecast package (i.e., the source
+#code of function forecast::arfima). Note that as opposed to
+#the package documentation, the function 'Arima()' from the
+#forecast package is employed to refine the parameter estimates.
+#Also not that the error disappears when reducing the argument
+#'drange' to 0.499 instead of the currently employed 0.499999,
+#while the estimated AR and MA parts of the models are almost
+#identical
+#---
+  
 
 #compute forecast errors for evaluation period (January 2020 until December 2024)
 fcErrArr_dLW	<- evalAno20to24 - resArr_dLW
