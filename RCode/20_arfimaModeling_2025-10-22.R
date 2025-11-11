@@ -320,8 +320,7 @@ for(i in 1:ncol(dat_demeded)){
 dat_res	<- rainresults[rainresults$statID %in% colnames(raindata6024), ]
 
 for(i in 1:nrow(dat_res)){
-for(i in 327:nrow(dat_res)){
-  
+
   stat.tmp		<- dat_res$statID[i]
   ts.tmp		<- dat_demeded[, i]
   dLW.tmp		<- dat_res$LW[i]
