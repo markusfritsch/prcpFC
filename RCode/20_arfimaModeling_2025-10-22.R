@@ -333,7 +333,8 @@ for(i in 1:nrow(dat_res)){
     dat.tmp		<- ts.tmp[ti:tend]
     m.dLW.tmp	<- forecast::arfima(y = dat.tmp, drange = c(dLW.tmp, dLW.tmp), estim = "mle")
     m.bestd.tmp	<- forecast::arfima(y = dat.tmp, drange = c(bestd.tmp, bestd.tmp), estim = "mle")
-    m.drot.tmp	<- forecast::arfima(y = dat.tmp, drange = c(0.499999, 0.499999), estim = "mle")
+    m.drot.tmp	<- forecast::arfima(y = dat.tmp, drange = c(0.499, 0.499), estim = "mle")         #for getting rid of error message for time series 326; results virtually identical
+#    m.drot.tmp	<- forecast::arfima(y = dat.tmp, drange = c(0.499999, 0.499999), estim = "mle")   #line employed to get results reported in the paper
 
     # compute 1,2,...,12 step ahead forecasts of anomalies with arfima function of forecast package
 
@@ -766,6 +767,7 @@ for(i in 1:nrow(dat_rs)){
     assign(paste("list.m.dLW_rs_", i, sep = ""), value = c(get(paste("list.m.dLW_rs_", i, sep = "")), coef(m.dLW.tmp)))
     m.bestd.tmp	<- forecast::arfima(y = dat.tmp, drange = c(bestd.tmp, bestd.tmp), estim = "mle")
     assign(paste("list.m.bestd_rs_", i, sep = ""), value = c(get(paste("list.m.bestd_rs_", i, sep = "")), coef(m.bestd.tmp)))
+#    m.drot.tmp	<- forecast::arfima(y = dat.tmp, drange = c(0.499, 0.499), estim = "mle")              #for consistency with code above (gets rid of error message for time series 326: not part of forecasting set)
     m.drot.tmp	<- forecast::arfima(y = dat.tmp, drange = c(0.499999, 0.499999), estim = "mle")
     assign(paste("list.m.drot_rs_", i, sep = ""), value = c(get(paste("list.m.drot_rs_", i, sep = "")), coef(m.drot.tmp)))
 

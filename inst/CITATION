@@ -5,7 +5,8 @@ bibentry(bibtype = "Article",
 		person("Teresa", "Flock"),
 		person("Joachim", "Schnurbus"),
 		person("Philipp", "Sibbertsen")),
-	journal = ("Working Paper"),
+	journal = ("International Journal of Forecasting"),
 	year = ("2025"),
+	pages = ("forthcoming"),
 	header = "To cite the dataset in publication, please use:"
 	)
