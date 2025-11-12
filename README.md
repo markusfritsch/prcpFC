@@ -1,4 +1,4 @@
-# prcpFC: Functions and data for monthly precipitation and precipitation anomaly forecasting
+# prcpFC: Functions and data for monthly precipitation and precipitation anomaly forecasting at GHCNd monitoring station locations
 
 Markus Fritsch
 
