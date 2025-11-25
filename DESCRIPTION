@@ -2,7 +2,7 @@ Package: prcpFC
 Type: Package
 Title: Functions and data for monthly precipitation and precipitation anomaly forecasting at GHCNd monitoring station locations
 Version: 0.1.2
-Date: 2025-11-12
+Date: 2025-11-25
 Authors@R: c(person("Markus", "Fritsch", role = c("aut", "cre"),
 		email = "Markus.Fritsch@uni-Passau.de"),
 	person("Harry", "Haupt", role = c("aut"),

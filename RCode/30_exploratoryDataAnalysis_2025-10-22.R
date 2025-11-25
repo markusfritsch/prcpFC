@@ -732,7 +732,7 @@ lp1	<- ggplot(data = exAcf_df, mapping = aes(x = lag, y = lm)) +
   geom_hline(aes(yintercept = 0), col = cols.tmp[6]) +
   geom_hline(aes(yintercept = ci_upper), col = cols.tmp[6], linetype = "dashed") +
   geom_hline(aes(yintercept = ci_lower), col = cols.tmp[6], linetype = "dashed") +
-  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[2]) +
+  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[8]) +
   ylab("ACF") + xlab("Lag") + ylim(c(-0.4,0.75)) + xlim(0,30) +
   theme(panel.background = element_blank(), axis.title.y = element_blank(),
         plot.margin = unit(c(1,1,1,1.9), "cm"))
@@ -741,7 +741,7 @@ lp2	<- ggplot(data = exAcf_df, mapping = aes(x = lag, y = sm)) +
   geom_hline(aes(yintercept = 0), col = cols.tmp[6]) +
   geom_hline(aes(yintercept = ci_upper), col = cols.tmp[6], linetype = "dashed") +
   geom_hline(aes(yintercept = ci_lower), col = cols.tmp[6], linetype = "dashed") +
-  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[2]) +
+  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[8]) +
   ylab("ACF") + xlab("") + ylim(c(-0.4,0.75)) + xlim(0,30) +
   theme(panel.background = element_blank(), axis.title.y = element_blank(),
         plot.margin = unit(c(1,1,1,1.9), "cm"))
@@ -750,7 +750,7 @@ lp3	<- ggplot(data = exAcf_df, mapping = aes(x = lag, y = ap)) +
   geom_hline(aes(yintercept = 0), col = cols.tmp[6]) +
   geom_hline(aes(yintercept = ci_upper), col = cols.tmp[6], linetype = "dashed") +
   geom_hline(aes(yintercept = ci_lower), col = cols.tmp[6], linetype = "dashed") +
-  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[2]) +
+  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[8]) +
   ylab("ACF") + xlab("") + ylim(c(-0.4,0.75)) + xlim(0,30) +
   theme(panel.background = element_blank(), axis.title.y = element_text(angle = 0),
         plot.margin = unit(c(1,1,1,1), "cm"))
@@ -759,7 +759,7 @@ lp4	<- ggplot(data = exPacf_df, mapping = aes(x = lag, y = lm)) +
   geom_hline(aes(yintercept = 0), col = cols.tmp[6]) +
   geom_hline(aes(yintercept = ci_upper), col = cols.tmp[6], linetype = "dashed") +
   geom_hline(aes(yintercept = ci_lower), col = cols.tmp[6], linetype = "dashed") +
-  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[2]) +
+  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[8]) +
   ylab("PACF") + xlab("Lag") + ylim(c(-0.4,0.75)) + xlim(0,30) +
   theme(panel.background = element_blank(), axis.title.y = element_blank(),
         plot.margin = unit(c(1,1,1,2.2), "cm"))
@@ -768,7 +768,7 @@ lp5	<- ggplot(data = exPacf_df, mapping = aes(x = lag, y = sm)) +
   geom_hline(aes(yintercept = 0), col = cols.tmp[6]) +
   geom_hline(aes(yintercept = ci_upper), col = cols.tmp[6], linetype = "dashed") +
   geom_hline(aes(yintercept = ci_lower), col = cols.tmp[6], linetype = "dashed") +
-  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[2]) +
+  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[8]) +
   ylab("PACF") + xlab("") + ylim(c(-0.4,0.75)) + xlim(0,30) +
   theme(panel.background = element_blank(), axis.title.y = element_blank(),
         plot.margin = unit(c(1,1,1,2.2), "cm"))
@@ -777,7 +777,7 @@ lp6	<- ggplot(data = exPacf_df, mapping = aes(x = lag, y = ap)) +
   geom_hline(aes(yintercept = 0), col = cols.tmp[6]) +
   geom_hline(aes(yintercept = ci_upper), col = cols.tmp[6], linetype = "dashed") +
   geom_hline(aes(yintercept = ci_lower), col = cols.tmp[6], linetype = "dashed") +
-  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[2]) +
+  geom_segment(mapping = aes(xend = lag, yend = 0), col = cols.tmp[8]) +
   ylab("PACF") + xlab("") + ylim(c(-0.4,0.75)) + xlim(0,30) +
   theme(panel.background = element_blank(), axis.title.y = element_text(angle = 0),
         plot.margin = unit(c(1,1,1,1), "cm"))
@@ -846,7 +846,7 @@ lm6		<- lm(per_lm ~ freq_disc, data = peri_df)
 #summary(lm6)
 
 fp4	<- ggplot(data = peri_df, mapping = aes(x = freq_disc, y = per_ap)) +
-  geom_point(col = cols.tmp[2]) +
+  geom_point(col = cols.tmp[8]) +
   geom_smooth(method = "lm", col = cols.tmp[5]) +
   ylab(expression(paste("log(I(", lambda[j], "))", sep = ""))) + xlab("") + ylim(-11,6) +
   annotate("text", label = paste("slope: ", round(as.numeric(coef(lm4)[2]), digits = 4), sep = ""), x = 0, hjust="left", y = -8.4, col = cols.tmp[5]) +
@@ -854,7 +854,7 @@ fp4	<- ggplot(data = peri_df, mapping = aes(x = freq_disc, y = per_ap)) +
         plot.margin = unit(c(1,1,1,1), "cm"))
 
 fp5	<- ggplot(data = peri_df, mapping = aes(x = freq_disc, y = per_sm)) +
-  geom_point(col = cols.tmp[2]) +
+  geom_point(col = cols.tmp[8]) +
   geom_smooth(method = "lm", col = cols.tmp[5]) +
   ylab("") + xlab("") + ylim(-11,6) +
   annotate("text", label = paste("slope: ", round(as.numeric(coef(lm5)[2]), digits = 4), sep = ""), x = 0, hjust="left", y = -4.6, col = cols.tmp[5]) +
@@ -862,9 +862,9 @@ fp5	<- ggplot(data = peri_df, mapping = aes(x = freq_disc, y = per_sm)) +
         plot.margin = unit(c(1,1,1,2.4), "cm"))
 
 fp6	<- ggplot(data = peri_df, mapping = aes(x = freq_disc, y = per_lm)) +
-  geom_point(col = cols.tmp[2]) +
+  geom_point(col = cols.tmp[8]) +
   geom_smooth(method = "lm", col = cols.tmp[5]) +
-  ylab("") + xlab(expression(lambda[j])) + ylim(-11,6) +
+  ylab("") + xlab(expression(paste("log(", lambda[j], ")", sep = ""))) + ylim(-11,6) +
   annotate("text", label = paste("slope: ", round(as.numeric(coef(lm6)[2]), digits = 4), sep = ""), x = 0, hjust="left", y = 0.2, col = cols.tmp[5]) +
   theme(panel.background = element_blank(), axis.title.y = element_text(angle = 0),
         plot.margin = unit(c(1,1,1,2.4), "cm"))
